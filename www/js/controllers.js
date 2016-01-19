@@ -1,5 +1,11 @@
 angular.module('RateMyTalent.controllers', [])
 
+.controller('HomeCtrl', function($scope, $state) {
+  // $scope.signup = function() {
+  //   $state.transitionTo("signup");
+  // }
+})
+
 .controller('SignupCtrl', function($scope, $state) {
   $scope.user = {};
   $scope.errors = null;
