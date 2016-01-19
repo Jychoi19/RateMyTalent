@@ -47,4 +47,9 @@ angular.module('RateMyTalent.services', [])
       return null;
     }
   };
+})
+
+.factory("Auth", function($firebaseAuth) {
+  var usersRef = new Firebase("https//ratemytalent.firebaseio.com/users");
+  return $firebaseAuth(usersRef);
 });

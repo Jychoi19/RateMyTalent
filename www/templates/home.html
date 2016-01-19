@@ -1,11 +1,33 @@
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1696067264010821',
+      xfbml      : true,
+      version    : 'v2.5'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
 <ion-view>
    <ion-content scroll="false">
       <section class="login-container">
          <div class = "col header text-center">
             <img src="./img/ionic.png" class="logo"/>
          </div>
+<!--          <div class="card" ng-show="authData">
+           <div class="item item-text-wrap">
+             Hello {{authData.facebook.displayName}}!
+           </div>
+         </div> -->
          <div class = "col button-row text-center">
-            <img src="./img/facebook-button.png"/>
+            <img src="./img/facebook-button.png" ng-click="login()"/>
          </div>
          <div class = "col button-row text-center" ng-click="signup">
             <a href="#/signup">
