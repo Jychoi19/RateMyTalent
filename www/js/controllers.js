@@ -1,8 +1,8 @@
-angular.module('starter.controllers', [])
+angular.module('RateMyTalent.controllers', [])
 
-.controller('DashCtrl', function($scope) {})
+.controller('MyTalentsCtrl', function($scope) {})
 
-.controller('ChatsCtrl', function($scope, Chats) {
+.controller('HistoryCtrl', function($scope, MyHistory) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -11,18 +11,21 @@ angular.module('starter.controllers', [])
   //$scope.$on('$ionicView.enter', function(e) {
   //});
 
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
+  $scope.history = MyHistory.all();
+  $scope.remove = function(talent) {
+    MyHistory.remove(talent);
   };
 })
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
+.controller('HistoryDetailCtrl', function($scope, $stateParams, MyHistory) {
+  $scope.history = MyHistory.get($stateParams.talentId);
 })
 
-.controller('AccountCtrl', function($scope) {
+.controller('RatingsCtrl', function($scope) {})
+
+.controller('SettingsCtrl', function($scope) {
   $scope.settings = {
-    enableFriends: true
+    enableVisibility: true,
+    enableContact: false
   };
 });

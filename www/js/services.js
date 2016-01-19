@@ -1,10 +1,10 @@
-angular.module('starter.services', [])
+angular.module('RateMyTalent.services', [])
 
-.factory('Chats', function() {
+.factory('MyHistory', function() {
   // Might use a resource here that returns a JSON array
 
   // Some fake testing data
-  var chats = [{
+  var viewedTalents = [{
     id: 0,
     name: 'Ben Sparrow',
     lastText: 'You on your way?',
@@ -33,15 +33,15 @@ angular.module('starter.services', [])
 
   return {
     all: function() {
-      return chats;
+      return viewedTalents;
     },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
+    remove: function(talent) {
+      viewedTalents.splice(viewedTalents.indexOf(talent), 1);
     },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
+    get: function(talentId) {
+      for (var i = 0; i < viewedTalents.length; i++) {
+        if (viewedTalents[i].id === parseInt(talentId)) {
+          return viewedTalents[i];
         }
       }
       return null;

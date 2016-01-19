@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('RateMyTalent', ['ionic', 'RateMyTalent.controllers', 'RateMyTalent.services'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -32,7 +32,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   $stateProvider
 
   // setup an abstract state for the tabs directive
-    .state('tab', {
+  .state('tab', {
     url: '/tab',
     abstract: true,
     templateUrl: 'templates/tabs.html'
@@ -40,46 +40,57 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
   // Each tab has its own nav history stack:
 
-  .state('tab.dash', {
-    url: '/dash',
+  .state('tab.mytalents', {
+    url: '/mytalents',
     views: {
-      'tab-dash': {
-        templateUrl: 'templates/tab-dash.html',
-        controller: 'DashCtrl'
+      'tab-mytalents': {
+        templateUrl: 'templates/tab-mytalents.html',
+        controller: 'MyTalentsCtrl'
       }
     }
   })
 
-  .state('tab.chats', {
-      url: '/chats',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/tab-chats.html',
-          controller: 'ChatsCtrl'
-        }
-      }
-    })
-    .state('tab.chat-detail', {
-      url: '/chats/:chatId',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
-        }
-      }
-    })
-
-  .state('tab.account', {
-    url: '/account',
+  .state('tab.history', {
+    url: '/history',
     views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
+      'tab-history': {
+        templateUrl: 'templates/tab-history.html',
+        controller: 'HistoryCtrl'
+      }
+    }
+  })
+  
+  .state('tab.history-detail', {
+    url: '/history/:talentId',
+    views: {
+      'tab-history-detail': {
+        templateUrl: 'templates/history-detail.html',
+        controller: 'HistoryDetailCtrl'
+      }
+    }
+  })
+
+  .state('tab.ratings', {
+    url: '/ratings',
+    views: {
+      'tab-ratings': {
+        templateUrl: 'templates/tab-ratings.html',
+        controller: 'RatingsCtrl'
+      }
+    }
+  })
+
+  .state('tab.settings', {
+    url: '/settings',
+    views: {
+      'tab-settings': {
+        templateUrl: 'templates/tab-settings.html',
+        controller: 'SettingsCtrl'
       }
     }
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise('/tab/mytalents');
 
 });

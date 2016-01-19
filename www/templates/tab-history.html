@@ -1,0 +1,16 @@
+<ion-view view-title="My History">
+  <ion-content>
+    <ion-list>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="history1 in history" type="item-text-wrap" href="#/tab/history/{{viewedTalents.id}}">
+        <img ng-src="{{history1.face}}">
+        <h2>{{history1.name}}</h2>
+        <p>{{history1.lastText}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+
+        <ion-option-button class="button-assertive" ng-click="remove(talent)">
+          Delete
+        </ion-option-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
