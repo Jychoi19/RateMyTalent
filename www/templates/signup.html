@@ -1,0 +1,22 @@
+<ion-view view-title="Create Account">
+  <ion-content class="padding">
+    <div ng-show="errors" class="errors">{{ errors }}</div>
+    <form ng-submit="createAccount()">
+      <div class="list">
+        <label class="item item-input">
+          <span class="input-label">Email</span>
+          <input ng-model="user.email" type="text">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Password</span>
+          <input ng-model="user.password" type="password">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Password Confirmation</span>
+          <input ng-model="user.passwordConfirmation" type="password">
+        </label>
+      </div>
+      <button class="button button-positive button-block">Create Account</button>
+    </form>
+  </ion-content>
+</ion-view>
