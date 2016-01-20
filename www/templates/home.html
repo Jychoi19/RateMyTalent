@@ -27,12 +27,10 @@
            </div>
          </div> -->
          <div class = "col button-row text-center">
-            <img src="./img/facebook-button.png" ng-click="login()"/>
+            <img ng-src="{{ facebookImgUrl }}" on-Touch="onTouchFb()" on-release="onReleaseFb()"/>
          </div>
-         <div class = "col button-row text-center" ng-click="signup">
-            <a href="#/signup">
-               <img src="./img/email-button.png"/>
-            </a>
+         <div class = "col button-row text-center">
+               <img ng-src="{{ emailImgUrl }}" on-Touch="onTouchEmail()" on-release="onReleaseEmail()"/>
          </div>
          <div class = "col text-center signinnow">
             Already have an account? <strong><a href = "#">Sign in now!</a></strong>

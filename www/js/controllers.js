@@ -28,6 +28,22 @@ angular.module('RateMyTalent.controllers', [])
   //     $scope.authData = authData; // This will display the user's name in our view
   //   });
   // };
+  $scope.emailImgUrl = "./img/buttons/email-button.png"
+  $scope.facebookImgUrl = "./img/buttons/facebook-button.png"
+  $scope.onTouchFb = function() {
+    $scope.facebookImgUrl = "./img/buttons/facebook-button-click.png";
+  }
+  $scope.onTouchEmail = function() {
+    $scope.emailImgUrl = "./img/buttons/email-button-click.png";
+  }
+  $scope.onReleaseFb = function() {
+    $scope.facebookImgUrl = "./img/buttons/facebook-button.png";
+    $scope.login();
+  }
+  $scope.onReleaseEmail = function() {
+    $scope.emailImgUrl = "./img/buttons/email-button.png";
+    $state.transitionTo("signup");
+  }
 })
 
 .controller('SignupCtrl', function($scope, $state) {
