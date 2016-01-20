@@ -21,11 +21,6 @@
          <div class = "col header text-center">
             <img src="./img/ionic.png" class="logo"/>
          </div>
-<!--          <div class="card" ng-show="authData">
-           <div class="item item-text-wrap">
-             Hello {{authData.facebook.displayName}}!
-           </div>
-         </div> -->
          <div class = "col button-row text-center">
             <img ng-src="{{ facebookImgUrl }}" on-Touch="onTouchFb()" on-release="onReleaseFb()"/>
          </div>
@@ -33,7 +28,7 @@
                <img ng-src="{{ emailImgUrl }}" on-Touch="onTouchEmail()" on-release="onReleaseEmail()"/>
          </div>
          <div class = "col text-center signinnow">
-            Already have an account? <strong><a href = "#">Sign in now!</a></strong>
+            Already have an account? <strong><a href = "#/login">Sign in now!</a></strong>
          </div>            
       </section>
    </ion-content>

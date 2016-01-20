@@ -1,9 +1,11 @@
 angular.module('RateMyTalent.controllers', [])
 
 .controller('HomeCtrl', function($scope, $state, Auth) {
-  $scope.login = function() {
+  $scope.FbLogin = function() {
+
     Auth.$authWithOAuthRedirect("facebook").then(function(authData) {
       // User successfully logged in
+      $state.transitionTo("tab.mytalents");
     }).catch(function(error) {
       if (error.code === "TRANSPORT_UNAVAILABLE") {
         Auth.$authWithOAuthPopup("facebook").then(function(authData) {
@@ -16,29 +18,20 @@ angular.module('RateMyTalent.controllers', [])
         // Another error occurred
         console.log(error);
       }
-    });
+    })
   };
-  // $scope.loggedIn = function(){
-  //   Auth.$onAuth(function(authData) {
-  //     if (authData === null) {
-  //       console.log("Not logged in yet");
-  //     } else {
-  //       console.log("Logged in as", authData.uid);
-  //     }
-  //     $scope.authData = authData; // This will display the user's name in our view
-  //   });
-  // };
+
   $scope.emailImgUrl = "./img/buttons/email-button.png"
   $scope.facebookImgUrl = "./img/buttons/facebook-button.png"
   $scope.onTouchFb = function() {
     $scope.facebookImgUrl = "./img/buttons/facebook-button-click.png";
   }
-  $scope.onTouchEmail = function() {
-    $scope.emailImgUrl = "./img/buttons/email-button-click.png";
-  }
   $scope.onReleaseFb = function() {
     $scope.facebookImgUrl = "./img/buttons/facebook-button.png";
-    $scope.login();
+    $scope.FbLogin();
+  }  
+  $scope.onTouchEmail = function() {
+    $scope.emailImgUrl = "./img/buttons/email-button-click.png";
   }
   $scope.onReleaseEmail = function() {
     $scope.emailImgUrl = "./img/buttons/email-button.png";
@@ -71,9 +64,41 @@ angular.module('RateMyTalent.controllers', [])
       $scope.errors = "Error: The passwords do not match.";
     }
   }
+
 })
 
-.controller('MyTalentsCtrl', function($scope) {})
+.controller('LoginCtrl', function($scope ,$state) {
+  $scope.user = {};
+  $scope.errors = null;
+  var ref = new Firebase("https://ratemytalent.firebaseio.com");
+  $scope.loginAccount = function() {
+    ref.authWithPassword({
+      email    : $scope.user.email,
+      password : $scope.user.password
+    }, function(error, authData) {
+        $scope.$apply(function(){
+          if (error) {
+            console.log("Login Failed!", error);
+            $scope.errors = "" + error;
+          } else {
+            console.log("Authenticated successfully with payload:", authData.uid);
+            $state.transitionTo("tab.mytalents");
+          }
+        });
+    });
+  };
+})
+
+.controller('MyTalentsCtrl', function($scope, Auth) {
+  Auth.$onAuth(function(authData) {
+    if (authData === null) {
+      console.log("Not logged in yet");
+    } else {
+      console.log("Logged in as", authData.uid);
+    }
+    $scope.authData = authData; // This will display the user's name in our view
+  }); 
+})
 
 .controller('HistoryCtrl', function($scope, MyHistory) {
   // With the new view caching in Ionic, Controllers are only called

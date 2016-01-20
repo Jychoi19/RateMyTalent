@@ -1,5 +1,10 @@
 <ion-view view-title="My Talents">
   <ion-content class="padding">
+    <div class="card" ng-show="authData">
+      <div class="item item-text-wrap">
+        Hello {{authData.facebook.displayName}}!
+      </div>
+    </div>
     <h2>Welcome to RateMyTalent</h2>
     <p>
       This is an app that lets you upload your videos and have others rate them.
@@ -8,6 +13,7 @@
       All ratings are done anonymously.
     </p>
       More information will be available soon. Still in development. 
-    <p>
+    <p>             
+
   </ion-content>
 </ion-view>

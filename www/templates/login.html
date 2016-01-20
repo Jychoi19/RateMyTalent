@@ -1,7 +1,7 @@
-<ion-view view-title="Create Account">
+<ion-view view-title="Login">
   <ion-content class="padding">
     <div ng-show="errors" class="errors">{{ errors }}</div>
-    <form ng-submit="createAccount()">
+    <form ng-submit="loginAccount()">
       <div class="list">
         <label class="item item-input">
           <span class="input-label">Email</span>
@@ -11,12 +11,8 @@
           <span class="input-label">Password</span>
           <input ng-model="user.password" type="password" placeholder="Enter Password">
         </label>
-        <label class="item item-input">
-          <span class="input-label">Password</span>
-          <input ng-model="user.passwordConfirmation" type="password" placeholder="Enter Password Again">
-        </label>
       </div>
-      <button class="button button-positive button-block">Create Account</button>
+      <button class="button button-positive button-block">Login</button>
     </form>
   </ion-content>
 </ion-view>

@@ -29,6 +29,11 @@ angular.module('RateMyTalent', ['ionic', 'RateMyTalent.controllers', 'RateMyTale
       controller: 'SignupCtrl',
       templateUrl: 'templates/signup.html'
     })
+    .state('login', {
+      url: '/login',
+      controller: 'LoginCtrl',
+      templateUrl: 'templates/login.html'
+    })    
     .state('tab', {
       url: '/tab',
       abstract: true,
