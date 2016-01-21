@@ -125,7 +125,12 @@ $scope.remove = function(talent) {
 
 .controller('RatingsCtrl', function($scope) {})
 
-.controller('SettingsCtrl', function($scope) {
+.controller('SettingsCtrl', function($scope, $state) {
+  var ref = new Firebase("https://ratemytalent.firebaseio.com");
+  $scope.logOutAccount = function(){
+    ref.unauth();
+    $state.transitionTo("home");
+  };
   $scope.settings = {
     enableVisibility: true,
     enableContact: false
