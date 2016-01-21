@@ -2,7 +2,7 @@
   <ion-content class="padding">
     <div class="card" ng-show="authData">
       <div class="item item-text-wrap">
-        Hello {{authData.facebook.displayName}}!
+        Hello {{authData.facebook.displayName || authData.password.email}}!
       </div>
     </div>
     <h2>Welcome to RateMyTalent</h2>

@@ -56,6 +56,10 @@ angular.module('RateMyTalent.controllers', [])
             $scope.errors = "" + error;
           } else {
             console.log("Successfully created user account with uid:", userData.uid);
+            ref.authWithPassword({
+              email    : $scope.user.email,
+              password : $scope.user.password
+            }, function(){});
             $state.transitionTo("tab.mytalents");
           }
         });
@@ -94,7 +98,7 @@ angular.module('RateMyTalent.controllers', [])
     if (authData === null) {
       console.log("Not logged in yet");
     } else {
-      console.log("Logged in as", authData.uid);
+      console.log("Logged in as", authData.password.email);
     }
     $scope.authData = authData; // This will display the user's name in our view
   }); 
