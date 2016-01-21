@@ -2,10 +2,8 @@ angular.module('RateMyTalent.controllers', [])
 
 .controller('HomeCtrl', function($scope, $state, Auth) {
   $scope.FbLogin = function() {
-
     Auth.$authWithOAuthRedirect("facebook").then(function(authData) {
       // User successfully logged in
-      $state.transitionTo("tab.mytalents");
     }).catch(function(error) {
       if (error.code === "TRANSPORT_UNAVAILABLE") {
         Auth.$authWithOAuthPopup("facebook").then(function(authData) {
@@ -98,7 +96,7 @@ angular.module('RateMyTalent.controllers', [])
     if (authData === null) {
       console.log("Not logged in yet");
     } else {
-      console.log("Logged in as", authData.password.email);
+      console.log("Logged in via", authData.provider);
     }
     $scope.authData = authData; // This will display the user's name in our view
   }); 
@@ -125,11 +123,68 @@ $scope.remove = function(talent) {
 
 .controller('RatingsCtrl', function($scope) {})
 
-.controller('SettingsCtrl', function($scope, $state) {
+.controller('SettingsCtrl', function($scope, $state, $ionicPopup, Auth) {
   var ref = new Firebase("https://ratemytalent.firebaseio.com");
   $scope.logOutAccount = function(){
     ref.unauth();
     $state.transitionTo("home");
+  };
+  $scope.confirmLogOutAccount = function() {
+    var confirmPopup = $ionicPopup.confirm({
+      title: 'Log Out',
+      template: 'Are you sure you want to log out?'
+    });
+    confirmPopup.then(function(res) {
+      if(res) {
+        console.log('Successfully logged out');
+        $scope.logOutAccount();
+      } else {
+        console.log('not logged out');
+      }
+    });
+  };
+  $scope.deleteAccount = function(password) {
+    $scope.user.password = password;
+      Auth.$removeUser({
+        email    : Auth.$getAuth().password.email,
+        password : $scope.user.password
+      }, function(error) {
+        if (error === null) {
+          console.log("User removed successfully");
+        } else {
+          console.log("Error removing user:", error);
+        }
+      }).then(function(){
+        console.log("You have sucessfully deleted the account");
+        $state.transitionTo("home");
+      }
+      ); 
+  };
+  $scope.confirmDeleteAccount = function() {
+    $scope.user = {};
+    var myPopup = $ionicPopup.show({
+      template: '<input type="password" ng-model="user.passwordConfirm">',
+      title: 'Are you sure you want to delete your account?',
+      subTitle: 'Please enter your password to confirm',
+      scope: $scope,
+      buttons: [
+        { text: 'Cancel' },
+        { 
+          text: '<b>Delete</b>',
+          type: 'button-assertive',
+          onTap: function(e) {
+            if (!$scope.user.passwordConfirm) {
+              e.preventDefault();
+            } else {
+              return $scope.user.passwordConfirm;
+            }
+          }
+        }
+      ]
+    });
+    myPopup.then(function(password) {
+      $scope.deleteAccount(password);
+    });
   };
   $scope.settings = {
     enableVisibility: true,
