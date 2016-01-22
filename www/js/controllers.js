@@ -1,10 +1,18 @@
 angular.module('RateMyTalent.controllers', [])
 
 .controller('HomeCtrl', function($scope, $state, Auth) {
+  Auth.$getAuth(function(authData) {
+    if (authData !== null) {
+      $state.go("tab.mytalents");
+    }
+  });
   $scope.FbLogin = function() {
-    Auth.$authWithOAuthRedirect("facebook").then(function(authData) {
+    Auth.$authWithOAuthRedirect("facebook").then(Auth.$onAuth(function(authData) {
       // User successfully logged in
-    }).catch(function(error) {
+      if (authData !== null) {
+        $state.go("tab.mytalents");
+      }
+    })).catch(function(error) {
       if (error.code === "TRANSPORT_UNAVAILABLE") {
         Auth.$authWithOAuthPopup("facebook").then(function(authData) {
           // User successfully logged in. We can log to the console
@@ -37,9 +45,8 @@ angular.module('RateMyTalent.controllers', [])
   }
 })
 
-.controller('SignupCtrl', function($scope, $state) {
+.controller('SignupCtrl', function($scope, $state, $ionicPopup) {
   $scope.user = {};
-  $scope.errors = null;
   var ref = new Firebase("https://ratemytalent.firebaseio.com");
 
   $scope.createAccount = function(){
@@ -50,44 +57,52 @@ angular.module('RateMyTalent.controllers', [])
       }, function(error, userData) {
         $scope.$apply(function(){
           if (error) {
-            console.log(error);
-            $scope.errors = "" + error;
+            $ionicPopup.alert({
+              title: 'Error',
+              template: error
+            });
           } else {
-            console.log("Successfully created user account with uid:", userData.uid);
             ref.authWithPassword({
               email    : $scope.user.email,
               password : $scope.user.password
             }, function(){});
-            $state.transitionTo("tab.mytalents");
+            $ionicPopup.alert({
+              title: 'Success',
+              template: "Welcome to RateMyTalent!"
+            }).then( $state.go("tab.mytalents") );
           }
         });
       });
     } else {
-      $scope.errors = "Error: The passwords do not match.";
+      $ionicPopup.alert({
+        title: 'Error',
+        template: "The passwords do not match."
+      });
     }
   }
 
 })
 
-.controller('LoginCtrl', function($scope ,$state) {
+.controller('LoginCtrl', function($scope ,$state, $ionicPopup) {
   $scope.user = {};
-  $scope.errors = null;
   var ref = new Firebase("https://ratemytalent.firebaseio.com");
   $scope.loginAccount = function() {
     ref.authWithPassword({
       email    : $scope.user.email,
       password : $scope.user.password
     }, function(error, authData) {
-        $scope.$apply(function(){
           if (error) {
-            console.log("Login Failed!", error);
-            $scope.errors = "" + error;
+            $ionicPopup.alert({
+              title: 'Error',
+              template: error
+            });
           } else {
-            console.log("Authenticated successfully with payload:", authData.uid);
-            $state.transitionTo("tab.mytalents");
+            $ionicPopup.alert({
+              title: 'Success',
+              template: 'Welcome back ' + authData.password.email
+            }).then( $state.go("tab.mytalents") );
           }
         });
-    });
   };
 })
 
@@ -127,7 +142,10 @@ $scope.remove = function(talent) {
   var ref = new Firebase("https://ratemytalent.firebaseio.com");
   $scope.logOutAccount = function(){
     ref.unauth();
-    $state.transitionTo("home");
+    $ionicPopup.alert({
+      title: 'Success',
+      template: "You have successfully logged out"
+    }).then( $state.go("home") );
   };
   $scope.confirmLogOutAccount = function() {
     var confirmPopup = $ionicPopup.confirm({
@@ -135,37 +153,34 @@ $scope.remove = function(talent) {
       template: 'Are you sure you want to log out?'
     });
     confirmPopup.then(function(res) {
-      if(res) {
-        console.log('Successfully logged out');
-        $scope.logOutAccount();
-      } else {
-        console.log('not logged out');
-      }
+      if(res) { $scope.logOutAccount() };
     });
   };
   $scope.deleteAccount = function(password) {
     $scope.user.password = password;
-      Auth.$removeUser({
+      ref.removeUser({
         email    : Auth.$getAuth().password.email,
         password : $scope.user.password
       }, function(error) {
         if (error === null) {
-          console.log("User removed successfully");
+          $ionicPopup.alert({
+            title: 'Success',
+            template: "You have successfully deleted the account"
+          }).then( $state.go("home") );
         } else {
-          console.log("Error removing user:", error);
+          $ionicPopup.confirm({
+            title: 'Error',
+            template: error
+          });
         }
-      }).then(function(){
-        console.log("You have sucessfully deleted the account");
-        $state.transitionTo("home");
-      }
-      ); 
+      }); 
   };
   $scope.confirmDeleteAccount = function() {
     $scope.user = {};
     var myPopup = $ionicPopup.show({
       template: '<input type="password" ng-model="user.passwordConfirm">',
       title: 'Are you sure you want to delete your account?',
-      subTitle: 'Please enter your password to confirm',
+      subTitle: 'Please enter your password to continue',
       scope: $scope,
       buttons: [
         { text: 'Cancel' },
