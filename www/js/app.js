@@ -27,13 +27,13 @@ angular.module('RateMyTalent', ['ionic', 'RateMyTalent.controllers', 'RateMyTale
     .state('signup', {
       url: '/signup',
       controller: 'SignupCtrl',
-      templateUrl: 'templates/signup.html'
+      templateUrl: 'templates/authentication/signup.html'
     })
     .state('login', {
       url: '/login',
       controller: 'LoginCtrl',
-      templateUrl: 'templates/login.html'
-    })    
+      templateUrl: 'templates/authentication/login.html'
+    })     
     .state('tab', {
       url: '/tab',
       abstract: true,
@@ -60,7 +60,7 @@ angular.module('RateMyTalent', ['ionic', 'RateMyTalent.controllers', 'RateMyTale
     .state('tab.history-detail', {
       url: '/history/:talentId',
       views: {
-        'tab-history-detail': {
+        'tab-history': {
           templateUrl: 'templates/history-detail.html',
           controller: 'HistoryDetailCtrl'
         }
@@ -83,5 +83,14 @@ angular.module('RateMyTalent', ['ionic', 'RateMyTalent.controllers', 'RateMyTale
           controller: 'SettingsCtrl'
         }
       }
-    });
+    })
+    .state('tab.settings-passwordchange', {
+      url: '/settings/passwordchange',
+      views: {
+        'tab-settings': {
+        templateUrl: 'templates/authentication/passwordchange.html',
+        controller: 'PasswordChangeCtrl'
+      }
+    }
+  })  
 });

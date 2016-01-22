@@ -1,25 +1,22 @@
 <ion-view view-title="Settings">
-  <ion-content>
+  <ion-content class="padding">
     <ion-list>
-    <ion-toggle  ng-model="settings.enableVisibility">
-        Allow other users to see me
-    </ion-toggle>
-    <ion-toggle  ng-model="settings.enableContact">
-        Allow other to contact me
-    </ion-toggle>
-    <a class="item item-icon-left" href="#">
-        <i class="icon"></i>
-    </a>
-    <a class="item item-icon-left" ng-click="confirmLogOutAccount()">
-        <i class="icon ion-log-out"></i>
-            Log Out</a>
-    </ion-list>
-    <a class="item item-icon-left" href="#">
-        <i class="icon"></i>
-    </a>
-    <a class="item item-icon-left" ng-click="confirmDeleteAccount()">
-        <i class="icon ion-ios-trash"></i>
-            Delete Account</a>
+        <ion-toggle  ng-model="settings.enableVisibility">
+            Allow other users to see me
+        </ion-toggle>
+        <ion-toggle  ng-model="settings.enableContact">
+            Allow other to contact me
+        </ion-toggle>
+        <div class="spacer" style="height: 50px;"></div>
+        <ion-item href="#/tab/settings/passwordchange" class="item item-icon-left">
+            <i class="icon ion-edit"></i>Change Password
+        </ion-item>
+        <a class="item item-icon-left" ng-click="confirmLogOutAccount()">
+            <i class="icon ion-log-out"></i>Log Out
+        </a>
+        <a class="item item-icon-left" ng-click="confirmDeleteAccount()">
+            <i class="icon ion-ios-trash"></i>Delete Account
+        </a>
     </ion-list>
   </ion-content>
 </ion-view>

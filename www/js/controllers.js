@@ -1,17 +1,17 @@
 angular.module('RateMyTalent.controllers', [])
 
-.controller('HomeCtrl', function($scope, $state, Auth) {
+.controller('HomeCtrl', function($scope, $state, Auth) {  
+  // #issue - Redirect if logged in not working 
   Auth.$getAuth(function(authData) {
-    if (authData !== null) {
+    if (authData) {
       $state.go("tab.mytalents");
-    }
+    } 
   });
   $scope.FbLogin = function() {
-    Auth.$authWithOAuthRedirect("facebook").then(Auth.$onAuth(function(authData) {
-      // User successfully logged in
-      if (authData !== null) {
+    Auth.$authWithOAuthRedirect("facebook").then(
+      // #issue - Also does not redirect after being logged in 
+      Auth.$onAuth(function(authData) {
         $state.go("tab.mytalents");
-      }
     })).catch(function(error) {
       if (error.code === "TRANSPORT_UNAVAILABLE") {
         Auth.$authWithOAuthPopup("facebook").then(function(authData) {
@@ -86,6 +86,7 @@ angular.module('RateMyTalent.controllers', [])
 .controller('LoginCtrl', function($scope ,$state, $ionicPopup) {
   $scope.user = {};
   var ref = new Firebase("https://ratemytalent.firebaseio.com");
+
   $scope.loginAccount = function() {
     ref.authWithPassword({
       email    : $scope.user.email,
@@ -104,16 +105,88 @@ angular.module('RateMyTalent.controllers', [])
           }
         });
   };
+  $scope.resetPasswordConfirmation = function() {
+    $ionicPopup.show({
+      template: '<input type="text" ng-model="user.sendEmail">',
+      title: 'Password Reset',
+      subTitle: 'Please enter your email address to continue',
+      scope: $scope,
+      buttons: [
+        { text: 'Cancel' },
+        { 
+          text: '<b>Send</b>',
+          type: 'button-positive',
+          onTap: function(e) {
+            if (!$scope.user.sendEmail) {
+              e.preventDefault();
+            } else {
+              $scope.resetPassword($scope.user.sendEmail);
+            }
+          }
+        }
+      ]
+    })
+  };
+  $scope.resetPassword = function(email) {
+    ref.resetPassword({
+      email : email
+    }, function(error) {
+      if (error === null) {
+        $ionicPopup.alert({
+          title: 'Success',
+          template: "Password reset email sent successfully"
+        })
+      } else {
+        $ionicPopup.alert({
+          title: 'Error',
+          template: error
+        })
+      }
+    })
+  };
+})
+
+.controller('PasswordChangeCtrl', function($scope ,$state, $ionicPopup) {
+  $scope.user = {};
+  var ref = new Firebase("https://ratemytalent.firebaseio.com");
+  $scope.changePassword = function() {
+    if($scope.user.newPassword === $scope.user.newPasswordConfirmation) {
+      ref.changePassword({
+        email       : $scope.user.email,
+        oldPassword : $scope.user.oldPassword,
+        newPassword : $scope.user.newPassword
+      }, function(error) {
+        if (error === null) {
+          $ionicPopup.alert({
+            title: 'Success',
+            template: "Password changed successfully"
+          }).then(function(res) {
+            if(res) { $state.transitionTo('tab.settings') };
+    });;
+        } else {
+          $ionicPopup.alert({
+            title: 'Error',
+            template: error
+          });
+        }
+      });
+    } else {
+      $ionicPopup.alert({
+        title: 'Error',
+        template: "The new passwords do not match!"
+      });  
+    };
+  };
 })
 
 .controller('MyTalentsCtrl', function($scope, Auth) {
   Auth.$onAuth(function(authData) {
-    if (authData === null) {
-      console.log("Not logged in yet");
+    if (authData !== null) {
+      console.log("Logged in as " + authData.password.email)
+      $scope.authData = authData; 
     } else {
-      console.log("Logged in via", authData.provider);
+      console.log("Not logged in")
     }
-    $scope.authData = authData; // This will display the user's name in our view
   }); 
 })
 
@@ -140,6 +213,9 @@ $scope.remove = function(talent) {
 
 .controller('SettingsCtrl', function($scope, $state, $ionicPopup, Auth) {
   var ref = new Firebase("https://ratemytalent.firebaseio.com");
+  $scope.passwordChange = function() {
+    $state.transitionTo("tab.settings-passwordchange");
+  }
   $scope.logOutAccount = function(){
     ref.unauth();
     $ionicPopup.alert({
