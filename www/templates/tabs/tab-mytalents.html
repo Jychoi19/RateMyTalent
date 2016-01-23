@@ -1,11 +1,8 @@
 <ion-view view-title="My Talents">
   <ion-content class="padding">
-    <div class="card" ng-show="authData">
-      <div class="item item-text-wrap">
-        Hello {{authData.facebook.displayName || authData.password.email}}!
-      </div>
     </div>
     <h2>Welcome to RateMyTalent</h2>
+    <h4 ng-show="authData">Hello {{authData.facebook.displayName || authData.password.email}}!</h4>
     <p>
       This is an app that lets you upload your videos and have others rate them.
     </p>

@@ -37,13 +37,13 @@ angular.module('RateMyTalent', ['ionic', 'RateMyTalent.controllers', 'RateMyTale
     .state('tab', {
       url: '/tab',
       abstract: true,
-      templateUrl: 'templates/tabs.html'
+      templateUrl: 'templates/tabs/tabs.html'
     })
     .state('tab.mytalents', {
       url: '/mytalents',
       views: {
         'tab-mytalents': {
-          templateUrl: 'templates/tab-mytalents.html',
+          templateUrl: 'templates/tabs/tab-mytalents.html',
           controller: 'MyTalentsCtrl'
         }
       }
@@ -52,7 +52,7 @@ angular.module('RateMyTalent', ['ionic', 'RateMyTalent.controllers', 'RateMyTale
       url: '/history',
       views: {
         'tab-history': {
-          templateUrl: 'templates/tab-history.html',
+          templateUrl: 'templates/tabs/tab-history.html',
           controller: 'HistoryCtrl'
         }
       }
@@ -61,7 +61,7 @@ angular.module('RateMyTalent', ['ionic', 'RateMyTalent.controllers', 'RateMyTale
       url: '/history/:talentId',
       views: {
         'tab-history': {
-          templateUrl: 'templates/history-detail.html',
+          templateUrl: 'templates/tabs/history-detail.html',
           controller: 'HistoryDetailCtrl'
         }
       }
@@ -70,7 +70,7 @@ angular.module('RateMyTalent', ['ionic', 'RateMyTalent.controllers', 'RateMyTale
       url: '/ratings',
       views: {
         'tab-ratings': {
-          templateUrl: 'templates/tab-ratings.html',
+          templateUrl: 'templates/tabs/tab-ratings.html',
           controller: 'RatingsCtrl'
         }
       }
@@ -79,7 +79,7 @@ angular.module('RateMyTalent', ['ionic', 'RateMyTalent.controllers', 'RateMyTale
       url: '/settings',
       views: {
         'tab-settings': {
-          templateUrl: 'templates/tab-settings.html',
+          templateUrl: 'templates/tabs/tab-settings.html',
           controller: 'SettingsCtrl'
         }
       }
