@@ -1,30 +1,25 @@
 angular.module('RateMyTalent.controllers', [])
 
-.controller('HomeCtrl', function($scope, $state, Auth) {  
-  // #issue - Redirect if logged in not working 
-  Auth.$getAuth(function(authData) {
+.controller('HomeCtrl', function($scope, $state) {  
+  var userRef = new Firebase("https://ratemytalent.firebaseio.com/users");
+  userRef.onAuth(function(authData) {
     if (authData) {
       $state.go("tab.mytalents");
     } 
   });
   $scope.FbLogin = function() {
-    Auth.$authWithOAuthRedirect("facebook").then(
-      // #issue - Also does not redirect after being logged in 
-      Auth.$onAuth(function(authData) {
-        $state.go("tab.mytalents");
-    })).catch(function(error) {
-      if (error.code === "TRANSPORT_UNAVAILABLE") {
-        Auth.$authWithOAuthPopup("facebook").then(function(authData) {
+    //userRef.authWithOAuthRedirect("facebook", function(error) {
+      //if (error.code === "TRANSPORT_UNAVAILABLE") {
+        userRef.authWithOAuthPopup("facebook", function(authData) {
           // User successfully logged in. We can log to the console
           // since we’re using a popup here
-          console.log(authData);
           $state.transitionTo("tab.mytalents");
         });
-      } else {
+      //} else {
         // Another error occurred
-        console.log(error);
-      }
-    })
+       // console.log(error);
+      //}
+    //});
   };
 
   $scope.emailImgUrl = "./img/buttons/email-button.png"
@@ -182,7 +177,11 @@ angular.module('RateMyTalent.controllers', [])
 .controller('MyTalentsCtrl', function($scope, Auth) {
   Auth.$onAuth(function(authData) {
     if (authData !== null) {
-      console.log("Logged in as " + authData.password.email)
+      if (authData.password) {
+        console.log("Logged in as " + authData.password.email)
+      } else {
+        console.log("Logged in as " + authData.facebook.displayName);
+      }
       $scope.authData = authData; 
     } else {
       console.log("Not logged in")
@@ -234,6 +233,7 @@ $scope.remove = function(talent) {
   };
   $scope.deleteAccount = function(password) {
     $scope.user.password = password;
+    if (Auth.$getAuth().password) {
       ref.removeUser({
         email    : Auth.$getAuth().password.email,
         password : $scope.user.password
@@ -250,6 +250,9 @@ $scope.remove = function(talent) {
           });
         }
       }); 
+    } else {
+      return;
+    }
   };
   $scope.confirmDeleteAccount = function() {
     $scope.user = {};
