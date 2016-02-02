@@ -174,7 +174,7 @@ angular.module('RateMyTalent.controllers', [])
   };
 })
 
-.controller('MyTalentsCtrl', function($scope, Auth) {
+.controller('MyTalentsCtrl', function($scope, Auth, myTalents) {
   Auth.$onAuth(function(authData) {
     if (authData !== null) {
       if (authData.password) {
@@ -187,6 +187,8 @@ angular.module('RateMyTalent.controllers', [])
       console.log("Not logged in")
     }
   }); 
+
+  $scope.talents = myTalents.all();
 })
 
 .controller('HistoryCtrl', function($scope, MyHistory) {

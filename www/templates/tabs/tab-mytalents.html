@@ -1,16 +1,32 @@
 <ion-view view-title="My Talents">
   <ion-content class="padding">
     </div>
-    <h2>Welcome to RateMyTalent</h2>
+    <h3>Welcome to RateMyTalent</h3>
     <h4 ng-show="authData">Hello {{authData.facebook.displayName || authData.password.email}}!</h4>
-    <p>
-      This is an app that lets you upload your videos and have others rate them.
-    </p>
-    <p>
-      All ratings are done anonymously.
-    </p>
-      More information will be available soon. Still in development. 
-    <p>             
 
+    <div class="list card" ng-repeat="talent in talents">
+      <div class="item">
+        <h2>{{talent.name}}</h2>
+        <p>{{talent.uploadDate}}</p>
+      </div>
+      <div class="item item-image">
+        <img ng-src="{{ talent.image }}">
+        <p>Average Rating: {{talent.averageRating}}
+          <i class="ion-star"></i>
+        </p>
+        <p> 
+          <a class="subdued">Views: {{talent.viewCount}}</a>
+          <a class="subdued">Voters: {{talent.voters}}</a>
+        </p>
+      </div>
+
+    </div>
+
+    <button class="button button-positive button-block">Upload My Talent</button>
   </ion-content>
 </ion-view>
+
+
+
+
+
