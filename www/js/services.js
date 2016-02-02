@@ -17,17 +17,7 @@ angular.module('RateMyTalent.services', [])
     voters: '278',
     averageRating: '9.2',
     image: 'img/talents/drawing.jpg'
-  }, {
-    id: 2,
-    name: 'handstand',
-    uploadDate: 'Jan 21, 2016',
-    viewCount: '4567',
-    voters: '116',
-    averageRating: '4.7',
-    image: 'img/talents/handstand.jpg'
-  },
-
-  ];
+  }];
 
   return {
     all: function() {
@@ -53,29 +43,60 @@ angular.module('RateMyTalent.services', [])
   // Some fake testing data
   var viewedTalents = [{
     id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'img/ben.png'
+    name: 'Barstars',
+    uploadDate: 'Dec 7, 2015',
+    viewCount: '8127',
+    voters: '551',
+    averageRating: '6.7',
+    image: 'img/talents/barstars.jpg'
   }, {
     id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'img/max.png'
+    name: 'Girl Drawing',
+    uploadDate: 'Dec 14, 2015',
+    viewCount: '2967',
+    voters: '118',
+    averageRating: '3.2',
+    image: 'img/talents/girl-drawing.jpg'
   }, {
     id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'img/adam.jpg'
+    name: 'Kanye',
+    uploadDate: 'Dec 15, 2016',
+    viewCount: '13,203',
+    voters: '875',
+    averageRating: '8.1',
+    image: 'img/talents/kanye.jpg'
   }, {
     id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'img/perry.png'
+    name: 'Girl Singing',
+    uploadDate: 'Dec 18, 2015',
+    viewCount: '17,111',
+    voters: '2,001',
+    averageRating: '9.7',
+    image: 'img/talents/girl-singing.jpg'
   }, {
     id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'img/mike.png'
+    name: 'Guitar Playing',
+    uploadDate: 'Dec 24, 2015',
+    viewCount: '5017',
+    voters: '758',
+    averageRating: '1.2',
+    image: 'img/talents/guitar-playing.jpg'
+  }, {
+    id: 5,
+    name: 'jumping-pic',
+    uploadDate: 'Jan 1, 2016',
+    viewCount: '4,143',
+    voters: '298',
+    averageRating: '5.1',
+    image: 'img/talents/jumping-pic.jpg'
+  }, {
+    id: 6,
+    name: 'handstand',
+    uploadDate: 'Jan 21, 2016',
+    viewCount: '4567',
+    voters: '116',
+    averageRating: '4.7',
+    image: 'img/talents/handstand.jpg'
   }];
 
   return {
