@@ -202,7 +202,9 @@ angular.module('RateMyTalent.controllers', [])
   $scope.history = MyHistory.get($stateParams.talentId);
 })
 
-.controller('RatingsCtrl', function($scope) {})
+.controller('RatingsCtrl', function($scope, MyHistory) {
+  $scope.history = MyHistory.all();
+})
 
 .controller('SettingsCtrl', function($scope, $state, $ionicPopup, Auth) {
   var ref = new Firebase("https://ratemytalent.firebaseio.com");
