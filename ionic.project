@@ -1,4 +1,12 @@
 {
   "name": "RateMyTalent",
-  "app_id": "af4cf146"
+  "app_id": "af4cf146",
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
 }
