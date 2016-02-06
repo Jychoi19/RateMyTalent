@@ -229,27 +229,6 @@ angular.module('RateMyTalent.controllers', [])
 
 
 .controller('UploadCtrl', function($scope, $ionicActionSheet, $cordovaCapture, $cordovaCamera) {
-  $scope.refresh = function() {
-    // Stop the ion-refresher from spinning
-    $scope.$broadcast('scroll.refreshComplete');
-  }
-  $scope.actionSheet = function() {
-    var hideSheet = $ionicActionSheet.show({
-      // titleText: 'Modify your album',
-      buttons: [
-        { text: 'Block or report' },
-        { text: 'Copy Link' }
-      ],
-      destructiveText: 'Delete',
-      cancelText: 'Cancel',
-      cancel: function() {
-        // add cancel code..
-      },
-      buttonClicked: function(index) {
-        return true;
-      }
-    });
-  }
   $scope.captureVideo = function() {
     var options = { limit: 3, duration: 15 };
 
@@ -281,6 +260,69 @@ angular.module('RateMyTalent.controllers', [])
       alert(err);
     });
   }
+
+
+
+        var appId = '1696067264010821';
+        var roleArn = 'arn:aws:iam::034184894538:role/ratemytalent-role';
+        var bucketName = 'ratemytalent';
+        AWS.config.region = 'us-east-1';
+
+        var fbUserId = '10102811994572186';
+        var bucket = new AWS.S3({
+            params: {
+                Bucket: bucketName
+            }
+        });
+        var fileChooser = document.getElementById('file-chooser');
+        var button = document.getElementById('upload-button');
+        var results = document.getElementById('results');
+        button.addEventListener('click', function () {
+          bucket.config.credentials = new AWS.WebIdentityCredentials({
+                    ProviderId: 'graph.facebook.com',
+                    RoleArn: roleArn,
+                    WebIdentityToken: "CAAYGkG7JWkUBADNrTKirpmdM8F9JU66E8wBQbBCTil7Im9Hr5CxgD4ZCTi3BTDv166VCASsWxidVjTvy4Tvljv3iKZB3P6UZAVbWvofZB4XdZCCDzed8wYzgbajrsyqOkONnZAt1mHInFIwp0v8lHl5jiRieyLsCBAreX5phIznPL2o9AhM1su9s5BnGtrKiPnBnPbjaHgJQZDZD",
+                });
+            var file = fileChooser.files[0];
+            if (file) {
+                results.innerHTML = '';
+                //Object key will be facebook-USERID#/FILE_NAME
+                var objKey = 'facebook-' + fbUserId + '/' + file.name;
+                var params = {
+                    Key: objKey,
+                    ContentType: file.type,
+                    Body: file,
+                    ACL: 'public-read'
+                };
+                bucket.putObject(params, function (err, data) {
+                    if (err) {
+                        results.innerHTML = 'ERROR: ' + err;
+                    } else {
+                        listObjs();
+                    }
+                });
+            } else {
+                results.innerHTML = 'Nothing to upload.';
+            }
+        }, false);
+        function listObjs() {
+            var prefix = 'facebook-' + fbUserId;
+            bucket.listObjects({
+                Prefix: prefix
+            }, function (err, data) {
+                if (err) {
+                    results.innerHTML = 'ERROR: ' + err;
+                } else {
+                    var objKeys = "";
+                    data.Contents.forEach(function (obj) {
+                        objKeys += obj.Key + "<br>";
+                    });
+                    results.innerHTML = objKeys;
+                }
+            });
+        }
+
+
 })
 
 
