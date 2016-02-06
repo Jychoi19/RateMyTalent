@@ -1,18 +1,23 @@
 angular.module('RateMyTalent.controllers', [])
 
-.controller('HomeCtrl', function($scope, $state) {  
+.controller('HomeCtrl', function($scope, $state, $ionicLoading) {  
   var userRef = new Firebase("https://ratemytalent.firebaseio.com/users");
+  
   userRef.onAuth(function(authData) {
     if (authData) {
       $state.go("tab.mytalents");
     } 
   });
   $scope.FbLogin = function() {
+    $ionicLoading.show({
+      template: '<ion-spinner></ion-spinner>'
+    });
     //userRef.authWithOAuthRedirect("facebook", function(error) {
       //if (error.code === "TRANSPORT_UNAVAILABLE") {
         userRef.authWithOAuthPopup("facebook", function(authData) {
           // User successfully logged in. We can log to the console
           // since we’re using a popup here
+          $ionicLoading.hide();
           $state.transitionTo("tab.mytalents");
         });
       //} else {
@@ -40,11 +45,17 @@ angular.module('RateMyTalent.controllers', [])
   }
 })
 
-.controller('SignupCtrl', function($scope, $state, $ionicPopup) {
+
+
+.controller('SignupCtrl', function($scope, $state, $ionicPopup, $ionicLoading) {
   $scope.user = {};
   var ref = new Firebase("https://ratemytalent.firebaseio.com");
 
   $scope.createAccount = function(){
+    $ionicLoading.show({
+      template: '<ion-spinner></ion-spinner>'
+    });
+
     if($scope.user.password === $scope.user.passwordConfirmation) {
       ref.createUser({
         email    : $scope.user.email,
@@ -52,6 +63,7 @@ angular.module('RateMyTalent.controllers', [])
       }, function(error, userData) {
         $scope.$apply(function(){
           if (error) {
+            $ionicLoading.hide();
             $ionicPopup.alert({
               title: 'Error',
               template: error
@@ -61,6 +73,7 @@ angular.module('RateMyTalent.controllers', [])
               email    : $scope.user.email,
               password : $scope.user.password
             }, function(){});
+            $ionicLoading.hide();
             $ionicPopup.alert({
               title: 'Success',
               template: "Welcome to RateMyTalent!"
@@ -69,6 +82,7 @@ angular.module('RateMyTalent.controllers', [])
         });
       });
     } else {
+      $ionicLoading.hide();
       $ionicPopup.alert({
         title: 'Error',
         template: "The passwords do not match."
@@ -78,21 +92,29 @@ angular.module('RateMyTalent.controllers', [])
 
 })
 
-.controller('LoginCtrl', function($scope ,$state, $ionicPopup) {
+
+
+.controller('LoginCtrl', function($scope ,$state, $ionicPopup, $ionicLoading) {
   $scope.user = {};
   var ref = new Firebase("https://ratemytalent.firebaseio.com");
 
   $scope.loginAccount = function() {
+    $ionicLoading.show({
+      template: '<ion-spinner></ion-spinner>'
+    });
+
     ref.authWithPassword({
       email    : $scope.user.email,
       password : $scope.user.password
     }, function(error, authData) {
           if (error) {
+            $ionicLoading.hide();
             $ionicPopup.alert({
               title: 'Error',
               template: error
             });
           } else {
+            $ionicLoading.hide();
             $ionicPopup.alert({
               title: 'Success',
               template: 'Welcome back ' + authData.password.email
@@ -141,6 +163,8 @@ angular.module('RateMyTalent.controllers', [])
   };
 })
 
+
+
 .controller('PasswordChangeCtrl', function($scope ,$state, $ionicPopup) {
   $scope.user = {};
   var ref = new Firebase("https://ratemytalent.firebaseio.com");
@@ -174,6 +198,8 @@ angular.module('RateMyTalent.controllers', [])
   };
 })
 
+
+
 .controller('MyTalentsCtrl', function($scope, Auth, myTalents) {
   Auth.$onAuth(function(authData) {
     if (authData !== null) {
@@ -191,6 +217,8 @@ angular.module('RateMyTalent.controllers', [])
   $scope.talents = myTalents.all();
 })
 
+
+
 .controller('HistoryCtrl', function($scope, MyHistory) {
   $scope.history = MyHistory.all();
   $scope.remove = function(talent) {
@@ -198,13 +226,70 @@ angular.module('RateMyTalent.controllers', [])
   };
 })
 
-.controller('HistoryDetailCtrl', function($scope, $stateParams, MyHistory) {
-  $scope.history = MyHistory.get($stateParams.talentId);
+
+
+.controller('UploadCtrl', function($scope, $ionicActionSheet, $cordovaCapture, $cordovaCamera) {
+  $scope.refresh = function() {
+    // Stop the ion-refresher from spinning
+    $scope.$broadcast('scroll.refreshComplete');
+  }
+  $scope.actionSheet = function() {
+    var hideSheet = $ionicActionSheet.show({
+      // titleText: 'Modify your album',
+      buttons: [
+        { text: 'Block or report' },
+        { text: 'Copy Link' }
+      ],
+      destructiveText: 'Delete',
+      cancelText: 'Cancel',
+      cancel: function() {
+        // add cancel code..
+      },
+      buttonClicked: function(index) {
+        return true;
+      }
+    });
+  }
+  $scope.captureVideo = function() {
+    var options = { limit: 3, duration: 15 };
+
+    $cordovaCapture.captureVideo(options).then(function(videoData) {
+      // Success! Video data is here
+    }, function(err) {
+      // An error occurred. Show a message to the user
+    });
+  }
+  $scope.takePhoto = function() {
+    $scope.capturedImage = ''; 
+
+    var options = {
+      quality: 50,
+      destinationType: Camera.DestinationType.DATA_URL,
+      sourceType: Camera.PictureSourceType.CAMERA,
+      allowEdit: true,
+      encodingType: Camera.EncodingType.JPEG,
+      targetWidth: 200,
+      targetHeight: 200,
+      popoverOptions: CameraPopoverOptions,
+      saveToPhotoAlbum: false,
+      correctOrientation:true
+    };
+
+    $cordovaCamera.getPicture(options).then(function(imageData) {
+      $scope.capturedImage = "data:image/jpeg;base64," + imageData;
+    }, function(err) {
+      alert(err);
+    });
+  }
 })
+
+
 
 .controller('RatingsCtrl', function($scope, MyHistory) {
   $scope.history = MyHistory.all();
 })
+
+
 
 .controller('SettingsCtrl', function($scope, $state, $ionicPopup, Auth) {
   var ref = new Firebase("https://ratemytalent.firebaseio.com");

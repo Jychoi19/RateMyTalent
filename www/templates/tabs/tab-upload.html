@@ -1,0 +1,12 @@
+<ion-view view-title="Upload">
+  <ion-content>
+    <div class="wrapper">
+      <button class="button button-outline button-block icon-left ion-videocamera" ng-click="captureVideo()">Take Video</button>
+      <button class="button button-outline button-block icon-left ion-camera" ng-click="takePhoto()">Take Photo</button> 
+    </div>
+
+    <div class="text-center">
+      <img ng-src="{{capturedImage}}" ng-if="capturedImage" alt="" width="200">
+    </div>
+  </ion-content>
+</ion-view>

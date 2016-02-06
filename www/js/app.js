@@ -1,4 +1,4 @@
-angular.module('RateMyTalent', ['ionic', 'RateMyTalent.controllers', 'RateMyTalent.services', 'firebase'])
+angular.module('RateMyTalent', ['ionic', 'RateMyTalent.controllers', 'RateMyTalent.services', 'firebase', 'ngCordova'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -66,6 +66,15 @@ angular.module('RateMyTalent', ['ionic', 'RateMyTalent.controllers', 'RateMyTale
         }
       }
     })
+    .state('tab.upload', {
+      url: '/upload',
+      views: {
+        'tab-upload': {
+          templateUrl: 'templates/tabs/tab-upload.html',
+          controller: 'UploadCtrl'
+        }
+      }
+    })    
     .state('tab.ratings', {
       url: '/ratings',
       views: {
