@@ -1,6 +1,6 @@
 angular.module('RateMyTalent.controllers', [])
 
-.controller('HomeCtrl', function($scope, $state, $ionicLoading, $ionicPopup) {  
+.controller('WelcomeCtrl', function($scope, $state, $ionicLoading, $ionicPopup) {  
   var userRef = new Firebase("https://ratemytalent.firebaseio.com/users");
   
   userRef.onAuth(function(authData) {
@@ -76,7 +76,6 @@ angular.module('RateMyTalent.controllers', [])
   var ref = new Firebase("https://ratemytalent.firebaseio.com");
 
   $scope.loginAccount = function() {
-
     ref.authWithPassword({
       email    : $scope.user.email,
       password : $scope.user.password
@@ -172,19 +171,12 @@ angular.module('RateMyTalent.controllers', [])
 
 
 
-.controller('MyTalentsCtrl', function($scope, Auth, myTalents) {
-  Auth.$onAuth(function(authData) {
-    if (authData !== null) {
-      if (authData.password) {
-        console.log("Logged in as " + authData.password.email)
-      } else {
-        console.log("Logged in as " + authData.facebook.displayName);
-      }
+.controller('MyTalentsCtrl', function($scope, myTalents, Auth) {
+  Auth.$onAuth(function(authData){
+    if (authData) {
       $scope.authData = authData; 
-    } else {
-      console.log("Not logged in")
-    }
-  }); 
+    } else { return; }
+  });
 
   $scope.talents = myTalents.all();
 })
@@ -206,14 +198,17 @@ angular.module('RateMyTalent.controllers', [])
 
 
 
-.controller('UploadCtrl', function($scope, $ionicActionSheet, $cordovaCapture, $cordovaCamera) {
+.controller('UploadCtrl', function($scope, $cordovaCapture, $cordovaCamera, $ionicPopup) {
   $scope.captureVideo = function() {
     var options = { limit: 3, duration: 15 };
 
     $cordovaCapture.captureVideo(options).then(function(videoData) {
-      // Success! Video data is here
-    }, function(err) {
-      // An error occurred. Show a message to the user
+      // Success! Video data is here! Upload to S3
+    }, function(error) {
+      $ionicPopup.alert({
+        title: 'Error',
+        template: error
+      })
     });
   }
   $scope.takePhoto = function() {
@@ -234,71 +229,74 @@ angular.module('RateMyTalent.controllers', [])
 
     $cordovaCamera.getPicture(options).then(function(imageData) {
       $scope.capturedImage = "data:image/jpeg;base64," + imageData;
-    }, function(err) {
-      alert(err);
+    }, function(error) {
+      $ionicPopup.alert({
+        title: 'Error',
+        template: error
+      })
     });
   }
 
 
 
-        var appId = '1696067264010821';
-        var roleArn = 'arn:aws:iam::034184894538:role/ratemytalent-role';
-        var bucketName = 'ratemytalent';
-        AWS.config.region = 'us-east-1';
+        // var appId = '1696067264010821';
+        // var roleArn = 'arn:aws:iam::034184894538:role/ratemytalent-role';
+        // var bucketName = 'ratemytalent';
+        // AWS.config.region = 'us-east-1';
 
-        var fbUserId = '10102811994572186';
-        var bucket = new AWS.S3({
-            params: {
-                Bucket: bucketName
-            }
-        });
-        var fileChooser = document.getElementById('file-chooser');
-        var button = document.getElementById('upload-button');
-        var results = document.getElementById('results');
-        button.addEventListener('click', function () {
-          bucket.config.credentials = new AWS.WebIdentityCredentials({
-                    ProviderId: 'graph.facebook.com',
-                    RoleArn: roleArn,
-                    WebIdentityToken: "CAAYGkG7JWkUBADNrTKirpmdM8F9JU66E8wBQbBCTil7Im9Hr5CxgD4ZCTi3BTDv166VCASsWxidVjTvy4Tvljv3iKZB3P6UZAVbWvofZB4XdZCCDzed8wYzgbajrsyqOkONnZAt1mHInFIwp0v8lHl5jiRieyLsCBAreX5phIznPL2o9AhM1su9s5BnGtrKiPnBnPbjaHgJQZDZD",
-                });
-            var file = fileChooser.files[0];
-            if (file) {
-                results.innerHTML = '';
-                //Object key will be facebook-USERID#/FILE_NAME
-                var objKey = 'facebook-' + fbUserId + '/' + file.name;
-                var params = {
-                    Key: objKey,
-                    ContentType: file.type,
-                    Body: file,
-                    ACL: 'public-read'
-                };
-                bucket.putObject(params, function (err, data) {
-                    if (err) {
-                        results.innerHTML = 'ERROR: ' + err;
-                    } else {
-                        listObjs();
-                    }
-                });
-            } else {
-                results.innerHTML = 'Nothing to upload.';
-            }
-        }, false);
-        function listObjs() {
-            var prefix = 'facebook-' + fbUserId;
-            bucket.listObjects({
-                Prefix: prefix
-            }, function (err, data) {
-                if (err) {
-                    results.innerHTML = 'ERROR: ' + err;
-                } else {
-                    var objKeys = "";
-                    data.Contents.forEach(function (obj) {
-                        objKeys += obj.Key + "<br>";
-                    });
-                    results.innerHTML = objKeys;
-                }
-            });
-        }
+        // var fbUserId = '10102811994572186';
+        // var bucket = new AWS.S3({
+        //     params: {
+        //         Bucket: bucketName
+        //     }
+        // });
+        // var fileChooser = document.getElementById('file-chooser');
+        // var button = document.getElementById('upload-button');
+        // var results = document.getElementById('results');
+        // button.addEventListener('click', function () {
+        //   bucket.config.credentials = new AWS.WebIdentityCredentials({
+        //             ProviderId: 'graph.facebook.com',
+        //             RoleArn: roleArn,
+        //             WebIdentityToken: "CAAYGkG7JWkUBADNrTKirpmdM8F9JU66E8wBQbBCTil7Im9Hr5CxgD4ZCTi3BTDv166VCASsWxidVjTvy4Tvljv3iKZB3P6UZAVbWvofZB4XdZCCDzed8wYzgbajrsyqOkONnZAt1mHInFIwp0v8lHl5jiRieyLsCBAreX5phIznPL2o9AhM1su9s5BnGtrKiPnBnPbjaHgJQZDZD",
+        //         });
+        //     var file = fileChooser.files[0];
+        //     if (file) {
+        //         results.innerHTML = '';
+        //         //Object key will be facebook-USERID#/FILE_NAME
+        //         var objKey = 'facebook-' + fbUserId + '/' + file.name;
+        //         var params = {
+        //             Key: objKey,
+        //             ContentType: file.type,
+        //             Body: file,
+        //             ACL: 'public-read'
+        //         };
+        //         bucket.putObject(params, function (err, data) {
+        //             if (err) {
+        //                 results.innerHTML = 'ERROR: ' + err;
+        //             } else {
+        //                 listObjs();
+        //             }
+        //         });
+        //     } else {
+        //         results.innerHTML = 'Nothing to upload.';
+        //     }
+        // }, false);
+        // function listObjs() {
+        //     var prefix = 'facebook-' + fbUserId;
+        //     bucket.listObjects({
+        //         Prefix: prefix
+        //     }, function (err, data) {
+        //         if (err) {
+        //             results.innerHTML = 'ERROR: ' + err;
+        //         } else {
+        //             var objKeys = "";
+        //             data.Contents.forEach(function (obj) {
+        //                 objKeys += obj.Key + "<br>";
+        //             });
+        //             results.innerHTML = objKeys;
+        //         }
+        //     });
+        // }
 
 
 })
@@ -313,15 +311,29 @@ angular.module('RateMyTalent.controllers', [])
 
 .controller('SettingsCtrl', function($scope, $state, $ionicPopup, Auth) {
   var ref = new Firebase("https://ratemytalent.firebaseio.com");
+
+  Auth.$onAuth(function(authData) {
+    if (authData !== null) {
+      if (authData.password) {
+        console.log("Logged in as " + authData.password.email)
+      } else {
+        console.log("Logged in as " + authData.facebook.displayName);
+      }
+      $scope.authData = authData; 
+    } else {
+      console.log("Not logged in")
+    }
+  }); 
+
   $scope.passwordChange = function() {
     $state.transitionTo("tab.settings-passwordchange");
-  }
+  };
   $scope.logOutAccount = function(){
     ref.unauth();
     $ionicPopup.alert({
       title: 'Success',
       template: "You have successfully logged out"
-    }).then( $state.go("home") );
+    }).then( $state.go("welcome") );
   };
   $scope.confirmLogOutAccount = function() {
     var confirmPopup = $ionicPopup.confirm({
@@ -343,7 +355,7 @@ angular.module('RateMyTalent.controllers', [])
           $ionicPopup.alert({
             title: 'Success',
             template: "You have successfully deleted the account"
-          }).then( $state.go("home") );
+          }).then( $state.go("welcome") );
         } else {
           $ionicPopup.confirm({
             title: 'Error',

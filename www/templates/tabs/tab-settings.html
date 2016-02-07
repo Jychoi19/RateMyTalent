@@ -1,5 +1,8 @@
 <ion-view view-title="Settings">
   <ion-content class="padding">
+        <h3>Welcome to RateMyTalent</h3>
+        <h4>Hello {{authData.facebook.displayName || authData.password.email}}!</h4>
+    <br>
     <ion-list>
         <ion-toggle  ng-model="settings.enableVisibility">
             Allow other users to see me
@@ -7,7 +10,7 @@
         <ion-toggle  ng-model="settings.enableContact">
             Allow other to contact me
         </ion-toggle>
-        <div class="spacer" style="height: 50px;"></div>
+        <!-- <div class="spacer" style="height: 50px;"></div> -->
         <ion-item href="#/tab/settings/passwordchange" class="item item-icon-left">
             <i class="icon ion-edit"></i>Change Password
         </ion-item>

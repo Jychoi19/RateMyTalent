@@ -17,12 +17,12 @@ angular.module('RateMyTalent', ['ionic', 'RateMyTalent.controllers', 'RateMyTale
 })
 
 .config(function($stateProvider, $urlRouterProvider) {  
-  $urlRouterProvider.otherwise('/home');
+  $urlRouterProvider.otherwise('/welcome');
   $stateProvider
-    .state('home', {
-      url: '/home',
-      controller: 'HomeCtrl',
-      templateUrl: 'templates/home.html'
+    .state('welcome', {
+      url: '/welcome',
+      controller: 'WelcomeCtrl',
+      templateUrl: 'templates/authentication/welcome.html'
     })  
     .state('signup', {
       url: '/signup',

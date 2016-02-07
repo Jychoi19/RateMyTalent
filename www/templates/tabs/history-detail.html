@@ -6,7 +6,13 @@
         <p>{{history.uploadDate}}</p>
       </div>
       <div class="item item-image">
-        <img ng-src="{{ history.image }}">
+        <img ng-src="{{ history.source }}" ng-if="history.type==='picture'">
+        <video controls class="video" width="100%" height="100%" webkit-playsinline ng-if="history.type==='video'">
+          <source ng-src="{{ history.source }}" type="video/mp4">
+          <source ng-src="{{ history.source }}" type="video/ogg">
+          <source ng-src="{{ history.source }}" type="video/webm">
+        </video>
+        <div>{{ history.description }}</div>
         <p>Average Rating: {{history.averageRating}}
           <i class="ion-star"></i>
         </p>
