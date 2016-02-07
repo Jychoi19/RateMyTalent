@@ -20,21 +20,23 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
+@import "custom";
 
 .login-container {
   display: -webkit-flex;
   -webkit-flex-direction: column;
   height: 100%;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #135), color-stop(100%, #557));
-  background: -webkit-linear-gradient(top, #135 0%, #557 100%); 
-}
-.login-container > .button-row img {
-  max-width: 80%; 
+  padding: 10%;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #111), color-stop(100%, #555));
+  background: -webkit-linear-gradient(top, #111 0%, #555 100%); 
 }
 .login-container > .header {
-  -webkit-flex: 4;
+  -webkit-flex: 3;
   padding-top: 35%; 
 }
 .signinnow {
-	color: white;
+  color: #bbb;
+}
+.color-white {
+  color: white;
 }

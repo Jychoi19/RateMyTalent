@@ -1,6 +1,6 @@
 angular.module('RateMyTalent.controllers', [])
 
-.controller('HomeCtrl', function($scope, $state, $ionicLoading) {  
+.controller('HomeCtrl', function($scope, $state, $ionicLoading, $ionicPopup) {  
   var userRef = new Firebase("https://ratemytalent.firebaseio.com/users");
   
   userRef.onAuth(function(authData) {
@@ -8,54 +8,34 @@ angular.module('RateMyTalent.controllers', [])
       $state.go("tab.mytalents");
     } 
   });
+
   $scope.FbLogin = function() {
     $ionicLoading.show({
       template: '<ion-spinner></ion-spinner>'
     });
-    //userRef.authWithOAuthRedirect("facebook", function(error) {
-      //if (error.code === "TRANSPORT_UNAVAILABLE") {
-        userRef.authWithOAuthPopup("facebook", function(authData) {
-          // User successfully logged in. We can log to the console
-          // since we’re using a popup here
-          $ionicLoading.hide();
-          $state.transitionTo("tab.mytalents");
+    userRef.authWithOAuthPopup("facebook", function(error, authData) {
+      if (error) {
+        $ionicLoading.hide();
+        $ionicPopup.alert({
+          title: 'Error',
+          template: error
         });
-      //} else {
-        // Another error occurred
-       // console.log(error);
-      //}
-    //});
+        console.log(error);
+      } else {
+        $ionicLoading.hide();
+        $state.transitionTo("tab.mytalents");
+      };
+    });
   };
-
-  $scope.emailImgUrl = "./img/buttons/email-button.png"
-  $scope.facebookImgUrl = "./img/buttons/facebook-button.png"
-  $scope.onTouchFb = function() {
-    $scope.facebookImgUrl = "./img/buttons/facebook-button-click.png";
-  }
-  $scope.onReleaseFb = function() {
-    $scope.facebookImgUrl = "./img/buttons/facebook-button.png";
-    $scope.FbLogin();
-  }  
-  $scope.onTouchEmail = function() {
-    $scope.emailImgUrl = "./img/buttons/email-button-click.png";
-  }
-  $scope.onReleaseEmail = function() {
-    $scope.emailImgUrl = "./img/buttons/email-button.png";
-    $state.transitionTo("signup");
-  }
 })
 
 
 
-.controller('SignupCtrl', function($scope, $state, $ionicPopup, $ionicLoading) {
+.controller('SignupCtrl', function($scope, $state, $ionicPopup, $timeout, $ionicLoading) {
   $scope.user = {};
   var ref = new Firebase("https://ratemytalent.firebaseio.com");
 
   $scope.createAccount = function(){
-    $ionicLoading.show({
-      template: '<ion-spinner></ion-spinner>'
-    });
-
     if($scope.user.password === $scope.user.passwordConfirmation) {
       ref.createUser({
         email    : $scope.user.email,
@@ -63,7 +43,6 @@ angular.module('RateMyTalent.controllers', [])
       }, function(error, userData) {
         $scope.$apply(function(){
           if (error) {
-            $ionicLoading.hide();
             $ionicPopup.alert({
               title: 'Error',
               template: error
@@ -73,7 +52,6 @@ angular.module('RateMyTalent.controllers', [])
               email    : $scope.user.email,
               password : $scope.user.password
             }, function(){});
-            $ionicLoading.hide();
             $ionicPopup.alert({
               title: 'Success',
               template: "Welcome to RateMyTalent!"
@@ -82,7 +60,6 @@ angular.module('RateMyTalent.controllers', [])
         });
       });
     } else {
-      $ionicLoading.hide();
       $ionicPopup.alert({
         title: 'Error',
         template: "The passwords do not match."
@@ -99,22 +76,17 @@ angular.module('RateMyTalent.controllers', [])
   var ref = new Firebase("https://ratemytalent.firebaseio.com");
 
   $scope.loginAccount = function() {
-    $ionicLoading.show({
-      template: '<ion-spinner></ion-spinner>'
-    });
 
     ref.authWithPassword({
       email    : $scope.user.email,
       password : $scope.user.password
     }, function(error, authData) {
           if (error) {
-            $ionicLoading.hide();
             $ionicPopup.alert({
               title: 'Error',
               template: error
             });
           } else {
-            $ionicLoading.hide();
             $ionicPopup.alert({
               title: 'Success',
               template: 'Welcome back ' + authData.password.email
@@ -224,6 +196,12 @@ angular.module('RateMyTalent.controllers', [])
   $scope.remove = function(talent) {
     MyHistory.remove(talent);
   };
+})
+
+
+
+.controller('HistoryDetailCtrl', function($scope, $stateParams, MyHistory) {
+  $scope.history = MyHistory.get($stateParams.talentId);
 })
 
 

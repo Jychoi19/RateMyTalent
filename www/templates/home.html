@@ -1,35 +1,38 @@
 <script>
   window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '1696067264010821',
-      xfbml      : true,
-      version    : 'v2.5'
-    });
+   FB.init({
+    appId      : '1696067264010821',
+    xfbml      : true,
+    version    : 'v2.5'
+   });
   };
 
   (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "//connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {return;}
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
 </script>
-<ion-view>
-   <ion-content scroll="false">
-      <section class="login-container">
-         <div class = "col header text-center">
-            <img src="./img/ionic.png" class="logo"/>
-         </div>
-         <div class = "col button-row text-center">
-            <img ng-src="{{ facebookImgUrl }}" on-Touch="onTouchFb()" on-release="onReleaseFb()"/>
-         </div>
-         <div class = "col button-row text-center">
-               <img ng-src="{{ emailImgUrl }}" on-Touch="onTouchEmail()" on-release="onReleaseEmail()"/>
-         </div>
-         <div class = "col text-center signinnow">
-            Already have an account? <strong><a href = "#/login">Sign in now!</a></strong>
-         </div>            
-      </section>
-   </ion-content>
+<ion-view hide-nav-bar="true">
+  <ion-content scroll="false">
+    <section class="login-container">
+      <div class = "col header text-center">
+        <img src="./img/ionic2.png" class="logo"/>
+      </div>
+      <div>
+        <button class="button button-block button-positive icon-left ion-social-facebook" ng-click="FbLogin()">
+          <b>Login with Facebook</b>
+        </button>  
+        <button class="button button-block button-stable icon-left ion-android-mail" ui-sref="signup">
+          <b>Sign up with Email</b>
+        </button>
+      </div>
+      <div class = "col text-center signinnow">
+        Already have an account? 
+        <strong><a class="color-white" ui-sref="login">Sign in now!</a></strong>
+      </div>            
+    </section>
+  </ion-content>
 </ion-view>
