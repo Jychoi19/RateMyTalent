@@ -238,7 +238,6 @@ angular.module('RateMyTalent.controllers', [])
   }
 
 
-
         // var appId = '1696067264010821';
         // var roleArn = 'arn:aws:iam::034184894538:role/ratemytalent-role';
         // var bucketName = 'ratemytalent';

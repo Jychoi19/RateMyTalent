@@ -1,4 +1,9 @@
-angular.module('RateMyTalent', ['ionic', 'RateMyTalent.controllers', 'RateMyTalent.services', 'firebase', 'ngCordova'])
+angular.module('RateMyTalent', ['ionic', 
+  'RateMyTalent.controllers', 
+  'RateMyTalent.services', 
+  'RateMyTalent.directives', 
+  'firebase', 
+  'ngCordova'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
