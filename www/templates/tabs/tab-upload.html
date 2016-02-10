@@ -13,5 +13,16 @@
       <img ng-src="{{capturedImage}}" ng-if="capturedImage" alt="" width="200">
     </div>
 
+    <!-- Upload File -->
+    <input class="bottom-marg-15" type="file" name="file" file></input>
+    <div class="progress">
+      <div class="progress-bar" role="progressbar" aria-valuenow="{{ uploadProgress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ uploadProgress }}%;">
+        {{ uploadProgress == 0 ? '' : uploadProgress + '%' }}
+      </div>
+    </div>            
+    <button class="button button-positive button-block" ng-click="upload()">
+      <b>Upload</b>
+    </button>
+
   </ion-content>
 </ion-view>

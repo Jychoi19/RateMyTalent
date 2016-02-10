@@ -211,6 +211,7 @@ angular.module('RateMyTalent.controllers', [])
       })
     });
   }
+
   $scope.takePhoto = function() {
     $scope.capturedImage = ''; 
 
@@ -237,6 +238,45 @@ angular.module('RateMyTalent.controllers', [])
     });
   }
 
+  if ($scope.capturedImage) {
+    $scope.file = $scope.capturedImage;
+  };
+  $scope.creds = {
+    bucket: 'ratemytalent',
+    access_key: 'AKIAJVT37IJN2NFTM4PQ',
+    secret_key: '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'
+  }
+   
+  $scope.upload = function() {
+    // Configure The S3 Object 
+    AWS.config.update({ accessKeyId: $scope.creds.access_key, secretAccessKey: $scope.creds.secret_key });
+    AWS.config.region = 'us-east-1';
+    var bucket = new AWS.S3({ params: { Bucket: $scope.creds.bucket } });
+   
+    if($scope.file) {
+      var params = { Key: $scope.file.name, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
+   
+      bucket.putObject(params, function(err, data) {
+        if(err) {
+          // There Was An Error With Your S3 Config
+          alert(err.message);
+          return false;
+        }
+        else {
+          // Success!
+          alert('Upload Done');
+        }
+      })
+      .on('httpUploadProgress',function(progress) {
+            // Log Progress Information
+            console.log(Math.round(progress.loaded / progress.total * 100) + '% done');
+          });
+    }
+    else {
+      // No File Selected
+      alert('No File Selected');
+    }
+  }
 
         // var appId = '1696067264010821';
         // var roleArn = 'arn:aws:iam::034184894538:role/ratemytalent-role';

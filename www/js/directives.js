@@ -11,7 +11,7 @@ angular.module('RateMyTalent.directives', [])
         var files = event.target.files;
         var file = files[0];
         scope.file = file;
-        scope.$parent.file = file;
+        scope.$parent.$parent.file = file;
         scope.$apply();
       });
     }
