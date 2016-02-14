@@ -40,7 +40,7 @@ angular.module('RateMyTalent.controllers', [])
       ref.createUser({
         email    : $scope.user.email,
         password : $scope.user.password
-      }, function(error, userData) {
+      }, function(error, authData) {
         $scope.$apply(function(){
           if (error) {
             $ionicPopup.alert({
