@@ -3,8 +3,8 @@
     <div class="list" ng-repeat="talent in talents">
       <div class="item-avatar">
         <img ng-src="{{ authData.facebook.profileImageURL }}">
-        <h4>{{talent.name}}</h4>
-        <p>{{talent.uploadDate}}</p>
+        <h4>{{ talent.name }}</h4>
+        <p>{{ talent.uploadDate }}</p>
       </div>
       <div class="item item-image">
         <img ng-src="{{ talent.source }}" ng-if="talent.type==='picture'">
@@ -14,12 +14,12 @@
           <source ng-src="{{ talent.source }}" type="video/webm">
         </video>
         <div>{{ talent.description }}</div>
-        <p>Average Rating: {{talent.averageRating}}
+        <p>Average Rating: {{ talent.averageRating }}
           <i class="ion-star"></i>
         </p>
         <p> 
-          <a class="subdued">Views: {{talent.viewCount}}</a>
-          <a class="subdued">Voters: {{talent.voters}}</a>
+          <a class="subdued">Views: {{ talent.viewCount }}</a>
+          <a class="subdued">Voters: {{ talent.voters }}</a>
         </p>
       </div>
   </ion-content>

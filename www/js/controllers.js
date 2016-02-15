@@ -343,7 +343,7 @@ angular.module('RateMyTalent.controllers', [])
 
 
 .controller('RatingsCtrl', function($scope, MyHistory) {
-  $scope.history = MyHistory.all();
+  $scope.data = MyHistory.random(MyHistory.all());
 })
 
 

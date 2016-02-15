@@ -26,9 +26,9 @@ angular.module('RateMyTalent.services', [])
     name: 'Drawing',
     type: 'picture',
     uploadDate: 'Jan 9, 2016',
-    viewCount: '3567',
+    viewCount: '3,567',
     voters: '278',
-    averageRating: '9.2',
+    averageRating: '9.1',
     source: 'img/talents/drawing.jpg',
     description: 'My drawing of an eye'
   }];
@@ -55,7 +55,7 @@ angular.module('RateMyTalent.services', [])
   // Might use a resource here that returns a JSON array
 
   // Some fake testing data
-  var viewedTalents = [{
+  var totalTalents = [{
     id: 0,
     name: 'Barstars',
     type: 'picture',
@@ -117,27 +117,46 @@ angular.module('RateMyTalent.services', [])
     description: "How's our jumping timing??"
   }, {
     id: 6,
-    name: 'handstand',
+    name: '물구나무',
     type: 'picture',
     uploadDate: 'Jan 21, 2016',
     viewCount: '4567',
     voters: '116',
     averageRating: '4.7',
     source: 'img/talents/handstand.jpg',
-    description: "I'm 45 and I want to learn how to bboy! Practicing handstands for the first time"
+    description: "45세인나....물구나무 처음해본다"
+  }, {
+    id: 7,
+    name: 'toy',
+    type: 'video',
+    uploadDate: 'Nov 11, 2015',
+    viewCount: '777',
+    voters: '111',
+    averageRating: '4.1',
+    source: 'img/talents/small.mp4',
+    description: "Guess what this is??"
   }];
 
   return {
     all: function() {
-      return viewedTalents;
+      return totalTalents;
     },
     remove: function(talent) {
-      viewedTalents.splice(viewedTalents.indexOf(talent), 1);
+      totalTalents.splice(totalTalents.indexOf(talent), 1);
+    },
+    random: function(talent){
+      var shuffled = [];
+        while(talent.length) {
+            var index = Math.floor(Math.random() * (talent.length));
+            shuffled.push(talent[index]);
+            talent.splice(index, 1);
+        }
+        return shuffled;
     },
     get: function(talentId) {
-      for (var i = 0; i < viewedTalents.length; i++) {
-        if (viewedTalents[i].id === parseInt(talentId)) {
-          return viewedTalents[i];
+      for (var i = 0; i < totalTalents.length; i++) {
+        if (totalTalents[i].id === parseInt(talentId)) {
+          return totalTalents[i];
         }
       }
       return null;

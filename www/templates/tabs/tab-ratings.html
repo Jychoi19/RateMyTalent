@@ -1,31 +1,30 @@
 <ion-view view-title="Ratings Center">
-  <ion-content class="padding">
-    <div class="list card" ng-repeat="history1 in history">
+  <ion-content class="padding" scroll="false">
+    <div class="list card" ng-init="index = 0" ng-src="{{data[index]}}">
       <div class="item">
-        <h2>{{history1.name}}</h2>
-        <p>{{history1.uploadDate}}</p>
+        <h2>{{data[index].name}}</h2>
+        <p>{{data[index].uploadDate}}</p>
       </div>
       <div class="item item-image">
-        <img ng-src="{{ history1.source }}" ng-if="history1.type==='picture'">
-        <video controls class="video" width="100%" height="100%" webkit-playsinline ng-if="history1.type==='video'">
-          <source ng-src="{{ history1.source }}" type="video/mp4">
-          <source ng-src="{{ history1.source }}" type="video/ogg">
-          <source ng-src="{{ history1.source }}" type="video/webm">
+        <img ng-src="{{ data[index].source }}" ng-if="data[index].type ==='picture'">
+        <video controls autoplay class="video" width="100%" height="100%" webkit-playsinline ng-if="data[index].type==='video'">
+          <source ng-src="{{ data[index].source }}" type="video/mp4">
+          <source ng-src="{{ data[index].source }}" type="video/ogg">
+          <source ng-src="{{ data[index].source }}" type="video/webm">
         </video>
-        <div>{{ history1.description }}</div>
-        <p>Average Rating: {{history1.averageRating}}
+        <div>{{ data[index].description }}</div>
+        <p>Average Rating: {{ data[index].averageRating }}
           <i class="ion-star"></i>
         </p>
         <p> 
-          <a class="subdued">Views: {{history1.viewCount}}</a>
-          <a class="subdued">Voters: {{history1.voters}}</a>
+          <a class="subdued">Views: {{ data[index].viewCount }}</a>
+          <a class="subdued">Voters: {{ data[index].voters }}</a>
         </p>
       </div>
-
-      <td-cards>
-        <td-card ng-repeat="card in cards" on-destroy="cardDestroyed($index)" on-swipe="cardSwiped($index)">
-          Card content here
-        </td-card>
-      </td-cards>
+    </div>  
+    <button class="button button-block button-positive" ng-click="index = (index + 1) % data.length">
+      <b>Next</b>
+    </button>
   </ion-content>
+  
 </ion-view>
