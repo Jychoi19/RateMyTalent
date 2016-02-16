@@ -9747,3 +9747,12 @@ a.button {
 
 .color-white {
   color: white; }
+
+.card {
+  width: 100%;
+  height: 80%;
+  display: flex;
+  flex-direction: column; }
+
+.item-body {
+  flex: 1 1 auto; }

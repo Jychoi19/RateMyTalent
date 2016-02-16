@@ -27,6 +27,7 @@ angular.module('RateMyTalent.controllers', [])
       };
     });
   };
+  
 })
 
 
@@ -238,9 +239,7 @@ angular.module('RateMyTalent.controllers', [])
     });
   }
 
-  if ($scope.capturedImage) {
-    $scope.file = $scope.capturedImage;
-  };
+
   $scope.creds = {
     bucket: 'ratemytalent',
     access_key: 'AKIAJVT37IJN2NFTM4PQ',
@@ -265,11 +264,18 @@ angular.module('RateMyTalent.controllers', [])
         else {
           // Success!
           alert('Upload Done');
+
+          // Reset The Progress Bar
+          setTimeout(function() {
+            $scope.uploadProgress = 0;
+            $scope.$digest();
+          }, 4000);
         }
       })
       .on('httpUploadProgress',function(progress) {
             // Log Progress Information
-            console.log(Math.round(progress.loaded / progress.total * 100) + '% done');
+            $scope.uploadProgress = Math.round(progress.loaded / progress.total * 100);
+            $scope.$digest();
           });
     }
     else {
