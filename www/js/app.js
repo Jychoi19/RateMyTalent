@@ -66,7 +66,7 @@ angular.module('RateMyTalent', ['ionic',
       url: '/history/:talentId',
       views: {
         'tab-history': {
-          templateUrl: 'templates/tabs/history-detail.html',
+          templateUrl: 'templates/tabs/tab-history-detail.html',
           controller: 'HistoryDetailCtrl'
         }
       }
@@ -79,7 +79,16 @@ angular.module('RateMyTalent', ['ionic',
           controller: 'UploadCtrl'
         }
       }
-    })    
+    })
+    .state('tab.upload-detail', {
+      url: '/upload-detail',
+      views: {
+        'tab-upload': {
+          templateUrl: 'templates/tabs/tab-upload-detail.html',
+          controller: 'UploadCtrl'
+        }
+      }
+    })   
     .state('tab.ratings', {
       url: '/ratings',
       views: {

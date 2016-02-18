@@ -1,0 +1,34 @@
+<ion-view view-title="My History">
+  <ion-content class="padding">
+
+      <!-- Content displayed-->
+      <div class="text-center">
+        <img ng-src="{{capturedImage}}" ng-if="capturedImage" alt="" width="300">
+        <img ng-if="file" ng-show="{{file}}">
+        <img src="./img/imageholder.png" ng-if="!capturedImage || !file" alt="" width="300">
+      </div>
+
+      <!-- Name & Description -->
+      <div class="list">
+        <label class="item item-input">
+          <span class="input-label">Title</span>
+          <input ng-model="user.email" type="text" placeholder="Title">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Description</span>
+          <input ng-model="user.password" type="text" placeholder="Description">
+        </label>
+      </div>  
+
+    <!-- Progress Bar -->
+    <progress class="progress-bar" value="{{ uploadProgress }}" min="0" max="100">
+      {{ uploadProgress }}
+    </progress>
+    
+    <!-- Upload button -->
+    <button class="button button-positive button-block" id="upload-button" ng-click="upload()">
+      <b>Upload</b>
+    </button>
+  
+  </ion-content>
+</ion-view>

@@ -94,6 +94,7 @@ angular.module('RateMyTalent.controllers', [])
           }
         });
   };
+
   $scope.resetPasswordConfirmation = function() {
     $ionicPopup.show({
       template: '<input type="text" ng-model="user.sendEmail">',
@@ -116,6 +117,7 @@ angular.module('RateMyTalent.controllers', [])
       ]
     })
   };
+
   $scope.resetPassword = function(email) {
     ref.resetPassword({
       email : email
@@ -138,8 +140,9 @@ angular.module('RateMyTalent.controllers', [])
 
 
 .controller('PasswordChangeCtrl', function($scope ,$state, $ionicPopup) {
-  $scope.user = {};
   var ref = new Firebase("https://ratemytalent.firebaseio.com");
+  $scope.user = {};
+
   $scope.changePassword = function() {
     if($scope.user.newPassword === $scope.user.newPasswordConfirmation) {
       ref.changePassword({
@@ -199,7 +202,10 @@ angular.module('RateMyTalent.controllers', [])
 
 
 
-.controller('UploadCtrl', function($scope, $cordovaCapture, $cordovaCamera, $ionicPopup) {
+.controller('UploadCtrl', function($scope, $cordovaCapture, $cordovaCamera, $cordovaFileTransfer, $ionicPopup,  $ionicLoading) {
+  $scope.sizeLimit = 10585760; // 10MBs
+  $scope.file = {};
+
   $scope.captureVideo = function() {
     var options = { limit: 3, duration: 15 };
 
@@ -217,13 +223,13 @@ angular.module('RateMyTalent.controllers', [])
     $scope.capturedImage = ''; 
 
     var options = {
-      quality: 50,
-      destinationType: Camera.DestinationType.DATA_URL,
+      quality: 100,
+      destinationType: Camera.DestinationType.FILE_URI,
       sourceType: Camera.PictureSourceType.CAMERA,
       allowEdit: true,
       encodingType: Camera.EncodingType.JPEG,
-      targetWidth: 200,
-      targetHeight: 200,
+      targetWidth: 300,
+      targetHeight: 300,
       popoverOptions: CameraPopoverOptions,
       saveToPhotoAlbum: false,
       correctOrientation:true
@@ -231,6 +237,9 @@ angular.module('RateMyTalent.controllers', [])
 
     $cordovaCamera.getPicture(options).then(function(imageData) {
       $scope.capturedImage = "data:image/jpeg;base64," + imageData;
+      $scope.picData = imageData;
+      $scope.img = imageData;
+
     }, function(error) {
       $ionicPopup.alert({
         title: 'Error',
@@ -238,7 +247,6 @@ angular.module('RateMyTalent.controllers', [])
       })
     });
   }
-
 
   $scope.creds = {
     bucket: 'ratemytalent',
@@ -252,37 +260,106 @@ angular.module('RateMyTalent.controllers', [])
     AWS.config.region = 'us-east-1';
     var bucket = new AWS.S3({ params: { Bucket: $scope.creds.bucket } });
    
-    if($scope.file) {
-      var params = { Key: $scope.file.name, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
-   
-      bucket.putObject(params, function(err, data) {
-        if(err) {
-          // There Was An Error With Your S3 Config
-          alert(err.message);
-          return false;
-        }
-        else {
-          // Success!
-          alert('Upload Done');
+    if($scope.capturedImage) {
+      $cordovaFileTransfer.upload("https://" + data.bucket + ".s3.amazonaws.com/", imageData, Uoptions)
+        .then(function(result) {
+            // Success!
+            // Let the user know the upload is completed
+            console.log('upload to s3 succeed ', result);
 
-          // Reset The Progress Bar
-          setTimeout(function() {
-            $scope.uploadProgress = 0;
-            $scope.$digest();
-          }, 4000);
-        }
-      })
-      .on('httpUploadProgress',function(progress) {
-            // Log Progress Information
-            $scope.uploadProgress = Math.round(progress.loaded / progress.total * 100);
-            $scope.$digest();
-          });
+        }, function(err) {
+            // Error
+            // Uh oh!
+            $ionicLoading.show({template : 'Upload Failed', duration: 3000});
+            console.log('upload to s3 fail ', err);
+        }, function(progress) {
+            
+            // constant progress updates
+        });
+      }
+
+
+
+    if($scope.file) {
+      
+      // Perform File Size Check First
+      var fileSize = Math.round(parseInt($scope.file.size));
+      if (fileSize > $scope.sizeLimit) {
+        $ionicPopup.alert({
+          title: 'File Too Large',
+          template: 'Sorry, your attachment is too big. <br/> Maximum '  + $scope.fileSizeLabel() + ' file attachment allowed',
+        });
+        return false;
+      }
+      // Prepend Unique String To Prevent Overwrites
+      var uniqueFileName = $scope.uniqueString() + '-' + $scope.file.name;
+
+      var params = { Key: uniqueFileName, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
+      
+      if (params.ContentType === "image/jpeg" || 
+          params.ContentType === "image/png"  ||
+          params.ContentType === "video/mp4"  ||
+          params.ContentType === "video/ogg"  ||
+          params.ContentType === "video/webm") {
+        bucket.putObject(params, function(err, data) {
+          if(err) {
+            // There Was An Error With Your S3 Config
+            $ionicPopup.alert({
+              title: 'Error',
+              template: err.message,
+            })
+            return false;
+          }
+          else {
+            // Success!
+            $ionicPopup.alert({
+              title: 'Success',
+              template: 'Upload Complete',
+            });
+
+            // Reset The Progress Bar
+            setTimeout(function() {
+              $scope.uploadProgress = 0;
+              $scope.$digest();
+            }, 4000);
+          }
+        })
+        .on('httpUploadProgress',function(progress) {
+          // Log Progress Information
+          $scope.uploadProgress = Math.round(progress.loaded / progress.total * 100);
+          $scope.$digest();
+        });
+      } else {
+        $ionicPopup.alert({
+          title: 'Error',
+          template: 'This is not a valid file',
+        });
+      }
     }
     else {
       // No File Selected
-      alert('No File Selected');
+      $ionicPopup.alert({
+        title: 'Error',
+        template: 'No File Selected',
+      });
     }
   }
+
+  $scope.fileSizeLabel = function() {
+    // Convert Bytes To MB
+    return Math.round($scope.sizeLimit / 1024 / 1024) + 'MB';
+  };
+
+  $scope.uniqueString = function() {
+    var text     = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 8; i++ ) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+  }
+
 
         // var appId = '1696067264010821';
         // var roleArn = 'arn:aws:iam::034184894538:role/ratemytalent-role';
@@ -348,6 +425,12 @@ angular.module('RateMyTalent.controllers', [])
 
 
 
+.controller('UploadDetailCtrl', function($scope, $controller) {
+  $controller('UploadCtrl', {$scope: $scope});
+})
+
+
+
 .controller('RatingsCtrl', function($scope, MyHistory) {
   $scope.data = MyHistory.random(MyHistory.all());
 })
@@ -373,6 +456,7 @@ angular.module('RateMyTalent.controllers', [])
   $scope.passwordChange = function() {
     $state.transitionTo("tab.settings-passwordchange");
   };
+
   $scope.logOutAccount = function(){
     ref.unauth();
     $ionicPopup.alert({
@@ -380,15 +464,25 @@ angular.module('RateMyTalent.controllers', [])
       template: "You have successfully logged out"
     }).then( $state.go("welcome") );
   };
+
   $scope.confirmLogOutAccount = function() {
     var confirmPopup = $ionicPopup.confirm({
       title: 'Log Out',
-      template: 'Are you sure you want to log out?'
+      template: 'Are you sure you want to log out?',
+      buttons: [
+        { text: 'Cancel' },
+        { 
+          text: '<b>Log Out</b>',
+          type: 'button-dark',
+          onTap: function(e) { return e; }
+        }
+      ]
     });
     confirmPopup.then(function(res) {
       if(res) { $scope.logOutAccount() };
     });
   };
+
   $scope.deleteAccount = function(password) {
     $scope.user.password = password;
     if (Auth.$getAuth().password) {
@@ -412,6 +506,7 @@ angular.module('RateMyTalent.controllers', [])
       return;
     }
   };
+
   $scope.confirmDeleteAccount = function() {
     $scope.user = {};
     var myPopup = $ionicPopup.show({
@@ -438,6 +533,7 @@ angular.module('RateMyTalent.controllers', [])
       $scope.deleteAccount(password);
     });
   };
+
   $scope.settings = {
     enableVisibility: true,
     enableContact: false

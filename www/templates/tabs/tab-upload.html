@@ -13,13 +13,21 @@
 
     <!-- Content displayed-->
     <div class="text-center">
-      <img ng-src="{{capturedImage}}" ng-if="capturedImage" alt="" width="200">
+      <img ng-src="{{picData}}" ng-if="capturedImage" alt="" width="200">
+      <img ng-if="file" ng-show="{{file}}">
+      <img src="./img/imageholder.png" ng-if="!capturedImage || !file" alt="" width="200">
+      <p>preview</p>
     </div>
 
     <!-- Select file from devide -->
     <input class="bottom-marg-15" type="file" name="file" file></input>
+    
+    <!-- To Upload Page -->
+    <button class="button button-dark button-block icon-right ion-chevron-right" ui-sref="tab.upload-detail">
+      <b>Next</b>
+    </button>
 
-    <!-- Progress Bar -->
+     <!-- Progress Bar -->
     <progress class="progress-bar" value="{{ uploadProgress }}" min="0" max="100">
       {{ uploadProgress }}
     </progress>
