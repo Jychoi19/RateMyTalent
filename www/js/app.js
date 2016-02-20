@@ -85,7 +85,7 @@ angular.module('RateMyTalent', ['ionic',
       views: {
         'tab-upload': {
           templateUrl: 'templates/tabs/tab-upload-detail.html',
-          controller: 'UploadCtrl'
+          controller: 'UploadDetailCtrl'
         }
       }
     })   

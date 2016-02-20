@@ -12,13 +12,17 @@
       <div class="list">
         <label class="item item-input">
           <span class="input-label">Title</span>
-          <input ng-model="user.email" type="text" placeholder="Title">
+          <input ng-model="talent.title" type="text" placeholder="Title">
         </label>
         <label class="item item-input">
           <span class="input-label">Description</span>
-          <input ng-model="user.password" type="text" placeholder="Description">
+          <input ng-model="talent.description" type="text" placeholder="Description">
         </label>
       </div>  
+
+
+    <!-- Select file from devide -->
+    <input class="bottom-marg-15" type="file" name="file" file></input>
 
     <!-- Progress Bar -->
     <progress class="progress-bar" value="{{ uploadProgress }}" min="0" max="100">

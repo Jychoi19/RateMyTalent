@@ -42,13 +42,19 @@ angular.module('RateMyTalent.controllers', [])
         email    : $scope.user.email,
         password : $scope.user.password
       }, function(error, authData) {
-        $scope.$apply(function(){
+        // $scope.$apply(function(){
           if (error) {
             $ionicPopup.alert({
               title: 'Error',
               template: error
             });
           } else {
+            // create username
+            ref.child("users").child(authData.uid).set({
+              provider: 'password',
+              username: $scope.user.username
+            })
+            // authenticate into homepage
             ref.authWithPassword({
               email    : $scope.user.email,
               password : $scope.user.password
@@ -58,7 +64,7 @@ angular.module('RateMyTalent.controllers', [])
               template: "Welcome to RateMyTalent!"
             }).then( $state.go("tab.mytalents") );
           }
-        });
+        // });
       });
     } else {
       $ionicPopup.alert({
@@ -202,9 +208,14 @@ angular.module('RateMyTalent.controllers', [])
 
 
 
-.controller('UploadCtrl', function($scope, $cordovaCapture, $cordovaCamera, $cordovaFileTransfer, $ionicPopup,  $ionicLoading) {
+.controller('UploadCtrl', function($scope, $cordovaCapture, $cordovaCamera, $cordovaFileTransfer, $ionicPopup, $ionicLoading) {
+  var ref = new Firebase("https://ratemytalent.firebaseio.com/users");
+  ref.onAuth(function(authData) { $scope.authData = authData; });
+  var userRef = ref.child($scope.authData.uid);
+
   $scope.sizeLimit = 10585760; // 10MBs
   $scope.file = {};
+  $scope.talent = {};
 
   $scope.captureVideo = function() {
     var options = { limit: 3, duration: 15 };
@@ -238,7 +249,6 @@ angular.module('RateMyTalent.controllers', [])
     $cordovaCamera.getPicture(options).then(function(imageData) {
       $scope.capturedImage = "data:image/jpeg;base64," + imageData;
       $scope.picData = imageData;
-      $scope.img = imageData;
 
     }, function(error) {
       $ionicPopup.alert({
@@ -260,23 +270,30 @@ angular.module('RateMyTalent.controllers', [])
     AWS.config.region = 'us-east-1';
     var bucket = new AWS.S3({ params: { Bucket: $scope.creds.bucket } });
    
-    if($scope.capturedImage) {
-      $cordovaFileTransfer.upload("https://" + data.bucket + ".s3.amazonaws.com/", imageData, Uoptions)
-        .then(function(result) {
-            // Success!
-            // Let the user know the upload is completed
-            console.log('upload to s3 succeed ', result);
+    // Upload from camera to S3
+    // if($scope.capturedImage) {
+    //   var options = {
+    //     filekey: "file",
+    //     fileName: "image.jpeg",
+    //     chunkedMode: false,
+    //     mimeType: "image/jpeg",
+    //   }
+    //   $cordovaFileTransfer.upload("https://ratemytalent.s3.amazonaws.com/", $scope.picData, options)
+    //     .then(function(result) {
+    //         // Success!
+    //         // Let the user know the upload is completed
+    //         console.log('upload to s3 succeed ', result);
 
-        }, function(err) {
-            // Error
-            // Uh oh!
-            $ionicLoading.show({template : 'Upload Failed', duration: 3000});
-            console.log('upload to s3 fail ', err);
-        }, function(progress) {
+    //     }, function(err) {
+    //         // Error
+    //         // Uh oh!
+    //         $ionicLoading.show({template : 'Upload Failed', duration: 3000});
+    //         console.log('upload to s3 fail ', err);
+    //     }, function(progress) {
             
-            // constant progress updates
-        });
-      }
+    //         // constant progress updates
+    //     })
+    //   }
 
 
 
@@ -311,6 +328,13 @@ angular.module('RateMyTalent.controllers', [])
             return false;
           }
           else {
+            // Upload Information to firebase
+            var newParamsKey = params.Key.replace(/\..+$/, '');
+            userRef.child("uploads").child(newParamsKey).set({ 
+              title: $scope.talent.title,
+              description: $scope.talent.description,
+              source: ("https://s3.amazonaws.com/ratemytalent/" + params.Key)
+            });
             // Success!
             $ionicPopup.alert({
               title: 'Success',
@@ -361,7 +385,7 @@ angular.module('RateMyTalent.controllers', [])
   }
 
 
-        // var appId = '1696067264010821';
+        // var appId = '1112944755382281';
         // var roleArn = 'arn:aws:iam::034184894538:role/ratemytalent-role';
         // var bucketName = 'ratemytalent';
         // AWS.config.region = 'us-east-1';

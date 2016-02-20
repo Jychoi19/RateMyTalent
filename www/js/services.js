@@ -51,6 +51,8 @@ angular.module('RateMyTalent.services', [])
   };
 })
 
+
+
 .factory('MyHistory', function() {
   // Might use a resource here that returns a JSON array
 
@@ -164,7 +166,9 @@ angular.module('RateMyTalent.services', [])
   };
 })
 
+
+
 .factory("Auth", function($firebaseAuth) {
   var usersRef = new Firebase("https//ratemytalent.firebaseio.com/users");
   return $firebaseAuth(usersRef);
-});
+})
