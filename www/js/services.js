@@ -1,9 +1,9 @@
 angular.module('RateMyTalent.services', [])
 
 .factory('myTalents', function(){
-    var myUploadedTalents = [{
+  var myUploadedTalents = [{
     id: 0,
-    name: 'Airchair',
+    title: 'Airchair',
     type: 'picture',
     uploadDate: 'Jan 27, 2016',
     viewCount: '877',
@@ -13,7 +13,7 @@ angular.module('RateMyTalent.services', [])
     description: 'My first airchair at a jam'
   }, {
     id: 1,
-    name: 'My Set',
+    title: 'My Set',
     type: 'video',
     uploadDate: 'Jan 15, 2016',
     viewCount: '5,559',
@@ -23,7 +23,7 @@ angular.module('RateMyTalent.services', [])
     description: 'This was one of my sets from 5 years ago!!'
   }, {
     id: 2,
-    name: 'Drawing',
+    title: 'Drawing',
     type: 'picture',
     uploadDate: 'Jan 9, 2016',
     viewCount: '3,567',
@@ -59,7 +59,7 @@ angular.module('RateMyTalent.services', [])
   // Some fake testing data
   var totalTalents = [{
     id: 0,
-    name: 'Barstars',
+    title: 'Barstars',
     type: 'picture',
     uploadDate: 'Dec 7, 2015',
     viewCount: '8127',
@@ -69,7 +69,7 @@ angular.module('RateMyTalent.services', [])
     description: 'BARSTARRRZZZZZ'
   }, {
     id: 1,
-    name: 'Girl Drawing',
+    title: 'Girl Drawing',
     type: 'picture',
     uploadDate: 'Dec 14, 2015',
     viewCount: '2967',
@@ -79,7 +79,7 @@ angular.module('RateMyTalent.services', [])
     description: 'My first animation drawing'
   }, {
     id: 2,
-    name: 'Kanye',
+    title: 'Kanye',
     type: 'picture',
     uploadDate: 'Dec 15, 2016',
     viewCount: '13,203',
@@ -89,7 +89,7 @@ angular.module('RateMyTalent.services', [])
     description: 'I wish this was me rapping'
   }, {
     id: 3,
-    name: 'Girl Singing',
+    title: 'Girl Singing',
     type: 'picture',
     uploadDate: 'Dec 18, 2015',
     viewCount: '17,111',
@@ -99,7 +99,7 @@ angular.module('RateMyTalent.services', [])
     description: "Im singing a cover of Alessia Cara's Here" 
   }, {
     id: 4,
-    name: 'Guitar Playing',
+    title: 'Guitar Playing',
     type: 'picture',
     uploadDate: 'Dec 24, 2015',
     viewCount: '5017',
@@ -109,7 +109,7 @@ angular.module('RateMyTalent.services', [])
     description: 'I started guitar two months ago!'
   }, {
     id: 5,
-    name: 'jumping-pic',
+    title: 'jumping-pic',
     type: 'picture',
     uploadDate: 'Jan 1, 2016',
     viewCount: '4,143',
@@ -119,7 +119,7 @@ angular.module('RateMyTalent.services', [])
     description: "How's our jumping timing??"
   }, {
     id: 6,
-    name: '물구나무',
+    title: '물구나무',
     type: 'picture',
     uploadDate: 'Jan 21, 2016',
     viewCount: '4567',
@@ -129,7 +129,7 @@ angular.module('RateMyTalent.services', [])
     description: "45세인나....물구나무 처음해본다"
   }, {
     id: 7,
-    name: 'toy',
+    title: 'toy',
     type: 'video',
     uploadDate: 'Nov 11, 2015',
     viewCount: '777',
