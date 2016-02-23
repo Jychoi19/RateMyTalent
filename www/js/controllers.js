@@ -258,84 +258,115 @@ angular.module('RateMyTalent.controllers', [])
     });
   }
 
+  $scope.fileSizeLabel = function() {
+    // Convert Bytes To MB
+    return Math.round($scope.sizeLimit / 1024 / 1024) + 'MB';
+  };
+
+  $scope.uniqueString = function() {
+    var text     = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 8; i++ ) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+  }
+
   $scope.creds = {
     appId: '1112944755382281',
-    roleArn: 'arn:aws:iam::034184894538:role/ratemytalent-role',
+    RoleArn: 'arn:aws:iam::034184894538:role/ratemytalent-role',
     bucket: 'ratemytalent',
     access_key: 'AKIAJVT37IJN2NFTM4PQ',
     secret_key: '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'
   }
    
   $scope.upload = function() {
-    // // Configure The S3 Object 
-    // AWS.config.update({ accessKeyId: $scope.creds.access_key, secretAccessKey: $scope.creds.secret_key });
-    // AWS.config.region = 'us-east-1';
+    // Configure The S3 Object 
+    AWS.config.update({ accessKeyId: $scope.creds.access_key, secretAccessKey: $scope.creds.secret_key });
+    AWS.config.region = 'us-east-1';
     var bucket = new AWS.S3({ params: { Bucket: $scope.creds.bucket } });
 
 
-    // Initialize the Amazon Cognito credentials provider
-    AWS.config.region = 'us-east-1'; // Region
-    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-        IdentityPoolId: 'us-east-1:63bb9540-a8a6-4307-983d-da0df34168bd',
-        Logins: { 'graph.facebook.com': 'FBTOKEN' }
-    });
 
-    // Initialize the Cognito Sync client
-    AWS.config.credentials.get(function(){
-      var syncClient = new AWS.CognitoSyncManager();
-      syncClient.openOrCreateDataset('myDataset', function(err, dataset) {
-        // // Read Records
-        // dataset.get('myRecord', function(err, value) {
-        //   console.log('myRecord: ' + value);
-        // });
-        // // Write Records
-        // dataset.put('newRecord', 'newValue', function(err, record) {
-        //   console.log(record);
-        // });
+    // // Initialize the Amazon Cognito credentials provider
+    // AWS.config.region = 'us-east-1'; // Region
+    // AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    //     AccountId: '034184894538',
+    //     IdentityPoolId: 'us-east-1:63bb9540-a8a6-4307-983d-da0df34168bd',
+    //     RoleArn: 'arn:aws:iam::034184894538:role/Cognito_RateMyTalentUnauth_Role'
+    // });
 
-        // // Delete Records
-        // dataset.remove('oldKey', function(err, record) {
-        //   console.log(success);
-        // });
-        dataset.put('myKey', 'myValue', function(err, record){
-          dataset.synchronize({
-            onSuccess: function(data, newRecords) {
-              console.log(newRecords);
-              // Your handler code here
-            }
-          });
-        });
-      });
-    })
+    // // Initialize the Cognito Sync client
+    // AWS.config.credentials.get(function(){
+    //   var syncClient = new AWS.CognitoSyncManager();
+    //   syncClient.openOrCreateDataset('myDataset', function(err, dataset) {
+    //     // // Read Records
+    //     // dataset.get('myRecord', function(err, value) {
+    //     //   console.log('myRecord: ' + value);
+    //     // });
+    //     // // Write Records
+    //     // dataset.put('newRecord', 'newValue', function(err, record) {
+    //     //   console.log(record);
+    //     // });
+
+    //     // // Delete Records
+    //     // dataset.remove('oldKey', function(err, record) {
+    //     //   console.log(success);
+    //     // });
+    //     dataset.put('myKey', 'myValue', function(err, record){
+    //       dataset.synchronize({
+    //         onSuccess: function(data, newRecords) {
+    //           console.log(newRecords);
+    //           // Your handler code here
+    //         }
+    //       });
+    //     });
+    //   });
+    // })
+
 
     // Upload from camera to S3
-    // if($scope.capturedImage) {
-    //   var options = {
-    //     filekey: "file",
-    //     fileName: "image.jpeg",
-    //     chunkedMode: false,
-    //     mimeType: "image/jpeg",
-    //   }
-    //   $cordovaFileTransfer.upload("https://ratemytalent.s3.amazonaws.com/", $scope.picData, options)
-    //     .then(function(result) {
-    //         // Success!
-    //         // Let the user know the upload is completed
-    //         console.log('upload to s3 success ', result);
+    if($scope.capturedImage) {
+      var options = {
+        fileKey: "file",
+        fileName: "image.jpeg",
+        chunkedMode: false,
+        mimeType: "image/jpeg",
+        params: {
+         "key": $scope.uniqueString() + '-' + 'CapturedImage.jpeg',
+         "Content-Type": "image/jpeg"
+        },
+      }
+      $cordovaFileTransfer.upload("https://ratemytalent.s3.amazonaws.com/", $scope.picData, options)
+        .then(function(result) {
+            // Upload Information to firebase
+            var newOptionsParamsKey = options.params.key.replace(/\..+$/, '');
+            userRef.child("uploads").child(newOptionsParamsKey).set({ 
+              source: ("https://s3.amazonaws.com/ratemytalent/" + options.params.Key),
+              title: $scope.talent.title,
+              description: $scope.talent.description,
+              uploadDate: Firebase.ServerValue.TIMESTAMP,
+            });
 
-    //     }, function(err) {
-    //         // Error
-    //         // Uh oh!
-    //         $ionicLoading.show({template : 'Upload Failed', duration: 3000});
-    //         console.log('upload to s3 fail ', err);
-    //     }, function(progress) {
-            
-    //         // constant progress updates
-    //     })
-    //   }
-
-
-
-    if($scope.file) {
+            // Let the user know the upload is completed
+            $ionicPopup.alert({
+              title: 'Success',
+              template: 'Upload Complete',
+            });
+        }, function(err) {
+            // Error
+            // Uh oh!
+            $ionicPopup.alert({
+              title: 'Error',
+              template: err,
+            });
+        }, function(progress) {
+          console.log(progress);
+            // constant progress updates
+        })
+        $scope.capturedImage = null;
+    } else if($scope.file.size) {
       
       // Perform File Size Check First
       var fileSize = Math.round(parseInt($scope.file.size));
@@ -346,6 +377,7 @@ angular.module('RateMyTalent.controllers', [])
         });
         return false;
       }
+
       // Prepend Unique String To Prevent Overwrites
       var uniqueFileName = $scope.uniqueString() + '-' + $scope.file.name;
 
@@ -398,29 +430,13 @@ angular.module('RateMyTalent.controllers', [])
           template: 'This is not a valid file',
         });
       }
-    }
-    else {
+    } else {
       // No File Selected
       $ionicPopup.alert({
         title: 'Error',
         template: 'No File Selected',
       });
     }
-  }
-
-  $scope.fileSizeLabel = function() {
-    // Convert Bytes To MB
-    return Math.round($scope.sizeLimit / 1024 / 1024) + 'MB';
-  };
-
-  $scope.uniqueString = function() {
-    var text     = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for( var i=0; i < 8; i++ ) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
   }
 
 
