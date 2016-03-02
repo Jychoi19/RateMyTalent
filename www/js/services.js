@@ -1,41 +1,15 @@
 angular.module('RateMyTalent.services', [])
 
-.factory('myTalents', function(){
-  var myUploadedTalents = [{
-    id: 0,
-    title: 'Airchair',
-    type: 'picture',
-    uploadDate: 'Jan 27, 2016',
-    viewCount: '877',
-    voters: '55',
-    averageRating: '6.7',
-    source: 'img/talents/airchair.jpg',
-    description: 'My first airchair at a jam'
-  }, {
-    id: 1,
-    title: 'My Set',
-    type: 'video',
-    uploadDate: 'Jan 15, 2016',
-    viewCount: '5,559',
-    voters: '334',
-    averageRating: '9.7',
-    source: 'img/talents/myset.mp4',
-    description: 'This was one of my sets from 5 years ago!!'
-  }, {
-    id: 2,
-    title: 'Drawing',
-    type: 'picture',
-    uploadDate: 'Jan 9, 2016',
-    viewCount: '3,567',
-    voters: '278',
-    averageRating: '9.1',
-    source: 'img/talents/drawing.jpg',
-    description: 'My drawing of an eye'
-  }];
+.factory('myTalents', function($firebaseArray){
+  var firebaseRef = new Firebase("https://ratemytalent.firebaseio.com"); 
+  
 
   return {
     all: function() {
-      return myUploadedTalents;
+      return [];
+    },
+    getHistoryFor: function(uid){
+      return $firebaseArray(firebaseRef.child('users/' + uid + '/uploads'));
     },
     remove: function(talent) {
       myUploadedTalents.splice(myUploadedTalents.indexOf(talent), 1);
@@ -171,4 +145,22 @@ angular.module('RateMyTalent.services', [])
 .factory("Auth", function($firebaseAuth) {
   var usersRef = new Firebase("https//ratemytalent.firebaseio.com/users");
   return $firebaseAuth(usersRef);
+})
+
+
+
+.factory('TalentService', function($firebaseArray, $cookies) {
+   var firebaseRef = new Firebase("https://ratemytalent.firebaseio.com"); 
+   var talents = $firebaseArray(firebaseRef.child('talents'));
+
+   return {
+      send: function (newMessage, roomID) {
+         messages.$add({
+            userName: $cookies.get('blocChatCurrentUser'),
+            content: newMessage,
+            sentAt: Firebase.ServerValue.TIMESTAMP,
+            roomId: roomID,
+         });
+      }
+   };
 })

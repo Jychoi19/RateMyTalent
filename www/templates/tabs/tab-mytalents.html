@@ -4,10 +4,10 @@
       <div class="item-avatar">
         <img ng-src="{{ authData.facebook.profileImageURL }}">
         <h4>{{ talent.title }}</h4>
-        <p>{{ talent.uploadDate }}</p>
+        <p>{{ talent.uploadDate | date:"medium" }}</p>
       </div>
       <div class="item item-image">
-        <img ng-src="{{ talent.source }}" ng-if="talent.type==='picture'">
+        <img ng-src="{{ talent.source }}">
         <video controls class="video" width="100%" height="100%" webkit-playsinline ng-if="talent.type==='video'">
           <source ng-src="{{ talent.source }}" type="video/mp4">
           <source ng-src="{{ talent.source }}" type="video/ogg">

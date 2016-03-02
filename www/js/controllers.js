@@ -182,13 +182,15 @@ angular.module('RateMyTalent.controllers', [])
 
 
 .controller('MyTalentsCtrl', function($scope, myTalents, Auth) {
+  $scope.talents = [];
+  window.scope = $scope.talents;
+
   Auth.$onAuth(function(authData){
     if (authData) {
       $scope.authData = authData; 
+      $scope.talents = myTalents.getHistoryFor($scope.authData.uid);
     } else { return; }
   });
-
-  $scope.talents = myTalents.all();
 })
 
 
@@ -439,6 +441,7 @@ angular.module('RateMyTalent.controllers', [])
     }
   }
 
+  
 
         // var appId = '1112944755382281';
         // var roleArn = 'arn:aws:iam::034184894538:role/ratemytalent-role';
