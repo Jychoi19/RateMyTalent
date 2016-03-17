@@ -6,10 +6,22 @@ angular.module('RateMyTalent.services', [])
 
   return {
     all: function() {
-      return [];
+      return firebaseRef.child('uploads').orderByChild("uploadDate").startAt(10).limitToFirst(10);
+      // .startAt(10); to start at the 10th object. May have to order based on upload date. 
     },
     getHistoryFor: function(uid){
-      return $firebaseArray(firebaseRef.child('users/' + uid + '/uploads'));
+      var talents = [];
+      firebaseRef.child('users/' + uid + '/uploads').on('value', function(uploads){
+        var allUploads = uploads.val();
+        for (property in allUploads) {
+          var id = allUploads[property];
+          firebaseRef.child('uploads/' + id).on('value', function(upload){
+            talents.push(upload.val());
+          });
+        }
+      });
+
+      return talents;
     },
     remove: function(talent) {
       myUploadedTalents.splice(myUploadedTalents.indexOf(talent), 1);

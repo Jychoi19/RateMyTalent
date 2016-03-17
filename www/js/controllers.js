@@ -211,9 +211,10 @@ angular.module('RateMyTalent.controllers', [])
 
 
 .controller('UploadCtrl', function($scope, $cordovaCapture, $cordovaCamera, $cordovaFileTransfer, $ionicPopup, $ionicLoading) {
-  var ref = new Firebase("https://ratemytalent.firebaseio.com/users");
+  var ref = new Firebase("https://ratemytalent.firebaseio.com/");
   ref.onAuth(function(authData) { $scope.authData = authData; });
-  var userRef = ref.child($scope.authData.uid);
+  var userRef = ref.child("users").child($scope.authData.uid);
+  var uploadRef = new Firebase("https://ratemytalent.firebaseio.com/uploads");
 
   $scope.sizeLimit = 10585760; // 10MBs
   $scope.file = {};
@@ -289,8 +290,6 @@ angular.module('RateMyTalent.controllers', [])
     AWS.config.region = 'us-east-1';
     var bucket = new AWS.S3({ params: { Bucket: $scope.creds.bucket } });
 
-
-
     // // Initialize the Amazon Cognito credentials provider
     // AWS.config.region = 'us-east-1'; // Region
     // AWS.config.credentials = new AWS.CognitoIdentityCredentials({
@@ -344,7 +343,10 @@ angular.module('RateMyTalent.controllers', [])
         .then(function(result) {
             // Upload Information to firebase
             var newOptionsParamsKey = options.params.key.replace(/\..+$/, '');
-            userRef.child("uploads").child(newOptionsParamsKey).set({ 
+            userRef.child("uploads").push({
+              newOptionsParamsKey: true
+            });
+            ref.child("uploads").child(newOptionsParamsKey).push({
               source: ("https://s3.amazonaws.com/ratemytalent/" + options.params.Key),
               title: $scope.talent.title,
               description: $scope.talent.description,
@@ -356,6 +358,7 @@ angular.module('RateMyTalent.controllers', [])
               title: 'Success',
               template: 'Upload Complete',
             });
+            $scope.talent = [];
         }, function(err) {
             // Error
             // Uh oh!
@@ -402,11 +405,20 @@ angular.module('RateMyTalent.controllers', [])
           else {
             // Upload Information to firebase
             var newParamsKey = params.Key.replace(/\..+$/, '');
-            userRef.child("uploads").child(newParamsKey).set({ 
+            var indexedUpload = {};
+            // indexedUpload[newParamsKey] = true;
+            //userRef.child("uploads").push(indexedUpload);
+
+            uploadRef.push({
               source: ("https://s3.amazonaws.com/ratemytalent/" + params.Key),
               title: $scope.talent.title,
               description: $scope.talent.description,
               uploadDate: Firebase.ServerValue.TIMESTAMP,
+              userId: $scope.authData.uid,
+              rating: 0,
+              viewCount: 0,
+            }).then(function(name){
+              userRef.child("uploads").push(name.key()); 
             });
             // Success!
             $ionicPopup.alert({
